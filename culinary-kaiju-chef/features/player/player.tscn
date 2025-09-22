@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://d5i5i5i5i5i5i5i5"]
+
+[ext_resource type="Script" path="res://features/player/player.gd" id="1_player"]
+[ext_resource type="CircleShape2D" uid="uid://d6j6j6j6j6j6j6j6" path="res://features/player/collision_shape.tres" id="2_collision_shape"]
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_player")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = ExtResource("2_collision_shape")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0, 1, 0, 1)  # 綠色作為玩家標識
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(1.5, 1.5)

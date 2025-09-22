@@ -1,0 +1,18 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://d2f2f2f2f2f2f2f2"]
+
+[ext_resource type="Script" path="res://src/core/data/WeaponData.gd" id="1_weapon_data"]
+
+[resource]
+script = ExtResource("1_weapon_data")
+name = "Throwing Knife"
+description = "A basic projectile weapon that flies straight"
+damage = 25
+speed = 300.0
+cooldown = 0.5
+range = 200.0
+projectile_scene = ExtResource("2_projectile_scene")
+special_effects = []
+piercing = false
+homing = false
+
+[ext_resource type="PackedScene" uid="uid://d8l8l8l8l8l8l8l8" path="res://features/weapons/base_weapon/base_projectile.tscn" id="2_projectile_scene"]

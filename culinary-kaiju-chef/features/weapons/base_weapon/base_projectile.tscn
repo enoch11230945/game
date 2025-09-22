@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://d8l8l8l8l8l8l8l8"]
+
+[ext_resource type="Script" path="res://features/weapons/base_weapon/base_projectile.gd" id="1_base_projectile"]
+[ext_resource type="CircleShape2D" uid="uid://d9m9m9m9m9m9m9m9" path="res://features/weapons/base_weapon/collision_shape.tres" id="2_collision_shape"]
+
+[node name="BaseProjectile" type="Area2D"]
+script = ExtResource("1_base_projectile")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = ExtResource("2_collision_shape")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 0.5, 0, 1)  # 橙色作為投射物標識
