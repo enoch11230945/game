@@ -1,0 +1,153 @@
+夠了。你們有了藍圖，但藍圖本身蓋不了房子。你們需要的是一份施工計畫，一份詳細到每一步、每一個螺絲釘的待辦事項清單 (To-Do List)。
+
+這就是它。
+
+這不是一份你可以隨意挑選任務的自助餐。這是一份嚴格的、有順序的指令集。跳過任何一步，你都是在為未來的失敗埋下地雷。紀律和順序是我們唯一關心的事。
+
+這份清單分為幾個階段。在完成前一個階段的所有任務並確保其穩定之前，**絕對不要**開始下一個階段的工作。穩定壓倒一切。
+
+---
+
+### **【核心指令】**
+
+**立即停止所有關於「新功能」的討論。** 在核心循環（一個角色、一種敵人、一種武器）被證明是穩固且高效能之前，任何關於新角色、新 Boss 或新關卡的討論都是在浪費氧氣。
+
+---
+
+### **終極開發待辦事項清單**
+
+#### **階段 0：奠定基石 (Foundation & Tooling)**
+
+* **目標**：建立一個乾淨、可擴展且專業的專案環境。此階段不寫任何一行遊戲邏輯。
+* **產出**：一個空的、但結構完美的 Godot 專案。
+
+1.  **版本控制 (Version Control)**
+    * [ ] 初始化 Git 倉庫 (`git init`)。
+    * [ ] 創建一個 `.gitignore` 檔案。使用 Godot 社群的標準範本，確保 `.godot/`, `export/` 等目錄被忽略。
+    * [ ] 創建主分支 (`main`) 和開發分支 (`develop`)。所有工作都在 `develop` 分支上進行。
+
+2.  **專案結構 (Project Scaffolding)**
+    * [ ] 在 Godot 中創建新專案。
+    * [ ] **嚴格按照**我之前給出的藍圖，手動創建所有頂層目錄：`assets`, `features`, `src`。
+    * [ ] 在這些目錄下，創建所有次級目錄（例如 `src/autoload`, `features/player`, `assets/audio/sfx` 等）。
+
+3.  **引擎配置 (Engine Configuration)**
+    * [ ] **設定輸入映射 (Input Map)**：在 `專案 -> 專案設定 -> Input Map` 中，定義所有玩家動作，例如 `move_left`, `move_right`, `move_up`, `move_down`。不要在程式碼中使用硬編碼的按鍵。
+    * [ ] **設定碰撞層 (Collision Layers)**：在 `專案 -> 專案設定 -> General -> Layer Names -> 2D Physics` 中，命名所有碰撞層。這一步**至關重要**：
+        * Layer 1: `world`
+        * Layer 2: `player`
+        * Layer 3: `enemies`
+        * Layer 4: `player_weapons`
+        * Layer 5: `enemy_weapons` (如果需要)
+        * Layer 6: `collectables` (例如 XP Gems)
+    * [ ] **設定 Autoloads**：將 `src/autoload/` 中的核心系統腳本添加為全域單例。
+        * `EventBus.gd`
+        * `ObjectPool.gd`
+        * `Game.gd`
+        * `PlayerData.gd`
+
+4.  **核心腳本與數據結構 (Core Scripts & Data)**
+    * [ ] 在 `src/core/data/` 中，創建所有 `class_name` 的數據定義腳本。這些腳本一開始可以只是空的，但必須定義好。
+        * `CharacterData.gd` (`extends Resource`)
+        * `EnemyData.gd` (`extends Resource`)
+        * `WeaponData.gd` (`extends Resource`)
+        * `ItemData.gd` (`extends Resource`)
+    * [ ] 在 `src/autoload/` 中，創建所有單例腳本的骨架。例如，在 `ObjectPool.gd` 中定義 `request()` 和 `reclaim()` 函數的空殼。
+
+#### **階段 1：核心玩法循環 (The Core Loop)**
+
+* **目標**：證明架構的可行性。在畫面上呈現一個可移動的角色、一種可生成的敵人、一種可造成傷害的武器。
+* **產出**：一個可玩的、極簡的遊戲原型。
+
+1.  **玩家 (The Player)**
+    * [ ] 創建 `features/player/player.tscn`，根節點為 `CharacterBody2D`。
+    * [ ] 添加子節點：`AnimatedSprite2D`, `CollisionShape2D`, `Camera2D`。
+    * [ ] 創建 `features/player/player.gd` 並附加到根節點。
+    * [ ] 在 `player.gd` 的 `_physics_process` 中，實現基於輸入映射的移動邏輯 (`move_and_slide()`)。
+    * [ ] **立即配置碰撞層**：將 `player.tscn` 的 Layer 設為 `player`，Mask 設為 `world`, `enemies`, `collectables`。
+
+2.  **敵人 (The Enemy)**
+    * [ ] 創建 `features/enemies/base_enemy/base_enemy.tscn`，根節點為 **`Area2D`**。
+    * [ ] 添加子節點：`Sprite2D` (暫時用 Godot icon), `CollisionShape2D`。
+    * [ ] 創建 `features/enemies/base_enemy/base_enemy.gd` 並附加。
+    * [ ] **實現手動移動**：在 `base_enemy.gd` 的 `_physics_process` 中，獲取玩家位置並朝其方向更新 `global_position`。
+    * [ ] **立即配置碰撞層**：將 `base_enemy.tscn` 的 Layer 設為 `enemies`，Mask 設為 `player_weapons`。
+
+3.  **武器 (The Weapon)**
+    * [ ] **數據先行**：在 `features/weapons/weapon_data/` 中，創建一個 `throwing_knife.tres` 資源，其腳本類型為 `WeaponData`。填充傷害、速度等數據。
+    * [ ] 創建 `features/weapons/base_weapon/base_projectile.tscn` (`Area2D`)，用於所有投射物。
+    * [ ] 在 `player.gd` 中添加一個計時器 (`Timer` 節點)，定時發射武器。
+    * [ ] 在計時器 `timeout` 信號觸發時，從 `ObjectPool` **請求**一個 `base_projectile.tscn` 的實例。
+    * [ ] 初始化投射物的位置和方向，並將其添加到場景樹。
+    * [ ] **立即配置碰撞層**：將 `base_projectile.tscn` 的 Layer 設為 `player_weapons`，Mask 設為 `enemies`。
+
+4.  **交互與狀態 (Interaction & State)**
+    * [ ] 在 `base_projectile.tscn` 的 `Area2D` 上，連接 `area_entered` 信號。
+    * [ ] 在信號處理函數中，檢查進入的 `area` 是否屬於 `enemies` 群組。如果是，呼叫該敵人的 `take_damage()` 方法。
+    * [ ] 在 `base_enemy.gd` 中實現 `take_damage(amount)` 和 `die()` 方法。`die()` 方法必須呼叫 `ObjectPool.reclaim(self)`。
+    * [ ] 創建 `src/main/main.tscn`，將 `player.tscn` 的實例放入其中。
+    * [ ] 創建一個簡單的 `EnemySpawner` 節點，每秒從 `ObjectPool` 請求一個敵人並放置在螢幕外。
+
+#### **階段 2：系統擴展與內容填充 (Expansion & Content)**
+
+* **目標**：在穩定的核心循環基礎上，豐富遊戲內容和系統。
+* **產出**：一個內容較為豐富、具有元成長機制的遊戲。
+
+1.  **數據庫與資源 (Database & Resources)**
+    * [ ] **批量創建數據資源**：為計劃中的前 5 種敵人、5 種武器、5 種被動物品創建 `.tres` 資源文件。專注於數據，而非實現。
+
+2.  **高級敵人行為 (Advanced Enemy Behavior)**
+    * [ ] 在 `base_enemy.gd` 中實現手動分離行為 (`_get_separation_vector()`)，使用 `PhysicsDirectSpaceState2D`。
+    * [ ] 根據不同的 `EnemyData` 資源，創建繼承自 `base_enemy.tscn` 的新敵人場景（例如 `enemy_onion_grunt.tscn`），賦予它們不同的精靈和屬性。
+
+3.  **生成器與波次 (Spawner & Waves)**
+    * [ ] 創建 `src/core/spawner/spawn_wave.gd` (`extends Resource`)，用於定義一個波次的敵人類型、數量和時間。
+    * [ ] 擴展 `EnemySpawner.gd`，使其能夠讀取一個 `SpawnWave` 陣列，並按時間軸生成敵人。
+
+4.  **升級與 UI (Upgrades & UI)**
+    * [ ] 創建 `features/items/xp_gem.tscn` (`Area2D`)，並在敵人死亡時從 `ObjectPool` 生成。
+    * [ ] 實現玩家拾取經驗寶石的邏輯，並在 `Game.gd` 中累計經驗值。
+    * [ ] 創建 `src/ui/screens/upgrade_screen.tscn`。當玩家升級時，彈出此畫面。
+    * [ ] 創建 `src/ui/components/upgrade_card.tscn`，用於顯示一個升級選項。
+    * [ ] 實現升級選擇邏輯，該邏輯應修改玩家持有的武器/物品數據。
+
+5.  **元成長 (Meta-Progression)**
+    * [ ] 在 `PlayerData.gd` 中實現數據的保存和加載功能 (`save()`, `load()`)，使用 `user://` 路徑。
+    * [ ] 創建一個簡單的商店 UI，允許玩家使用遊戲中獲得的金幣購買永久性升級。
+    * [ ] 在 `Game.gd` 啟動時，從 `PlayerData` 讀取永久性升級數據並應用到玩家身上。
+
+#### **階段 3：打磨、變現與發行 (Polish, Monetization & Release)**
+
+* **目標**：將遊戲從一個功能完整的產品打磨成一個可發行的精緻產品。
+* **產出**：一個準備上架多個平台的發行候選版 (Release Candidate)。
+
+1.  **感官體驗 (Juice & Polish)**
+    * [ ] 添加視覺特效 (VFX)：擊中閃爍、死亡粒子、武器軌跡等。所有特效都應通過 `ObjectPool` 管理。
+    * [ ] 添加音效 (SFX)：為所有關鍵交互（擊中、死亡、升級、點擊）添加音效。
+    * [ ] 添加背景音樂 (BGM)。
+    * [ ] 實現攝影機的平滑跟隨和螢幕震動效果。
+
+2.  **平台整合 (Platform Integration)**
+    * [ ] **Steam**: 安裝 GodotSteam 插件，實現 Steam 初始化和成就系統。
+    * [ ] **行動平台**: 安裝 Godot AdMob 插件，在遊戲中合適的位置（例如，失敗後提供復活機會）集成激勵視頻廣告。
+
+3.  **UI/UX 優化**
+    * [ ] 使用 `ThemeGen` 腳本生成統一的 `main_theme.tres`，並應用於所有 UI 元素。
+    * [ ] 確保所有 UI 在不同解析度和長寬比下都能正常縮放（使用 `Container` 節點）。
+    * [ ] 添加所有必要的設定畫面（音量、畫質等）。
+
+4.  **測試與平衡**
+    * [ ] 進行多輪內部測試，調整所有武器、敵人、升級的數值。
+    * [ ] 在不同性能的設備上進行性能剖析，找出瓶頸並優化。
+    * [ ] 修復所有 Bug。
+
+---
+
+### **【禁止事項 (The "DO NOT" List)】**
+
+* **絕對禁止**在 `_process` 或 `_physics_process` 中使用 `get_node("Some/String/Path")`。在 `_ready` 中將節點引用緩存到變數中。
+* **絕對禁止**將遊戲邏輯寫在 UI 腳本中。UI 只負責顯示數據和發出信號 (`EventBus.emit()`)。
+* **絕對禁止**在未經 `ObjectPool` 的情況下 `instantiate()` 或 `queue_free()` 任何頻繁出現的物件。
+* **絕對禁止**在階段 1 完成之前，花費任何時間在美術資源、音效或 UI 主題上。一個灰色的方塊就足夠了。
+
+這份清單是通往一個穩定、高效能產品的唯一路徑。不要偏離它。現在，去執行階段 0 的第一項任務。

@@ -1,0 +1,336 @@
+夠了。停止空談，開始建造。
+
+你們要的是一個完整的系統架構和所有檔案的位置。不是一個模糊的概念，而是一個可以立即動手、不會在六個月後崩潰的藍圖。上一次我給了你們基礎，但顯然你們還需要有人把每一個螺絲釘的位置都標示出來。
+
+這就是它。
+
+這不是建議，這是指令。按照這個結構，你們就能建立一個有品味的、高效能的系統。偏離它，你們就是在浪費自己的時間，並且注定會創造出一堆垃圾。我已經深入研究了網路上的所有相關資料——從官方文件到最偏僻的論壇帖子和開源專案。結論是一致的：對於處理成千上萬個動態實體的「類倖存者」遊戲，唯一的道路就是**奪取控制權**，繞過引擎的通用解決方案，直接操作最底層的數據。
+
+在我們開始之前，再次明確我們的核心哲學：
+
+1.  **數據決定一切**：程式碼只是操作數據的工具。先搞定數據結構，程式碼自然會變得簡單。
+2.  **沒有特殊情況**：如果你發現自己在寫 `if-else` 來處理邊界情況，那說明你的數據結構錯了。
+3.  **性能不是事後補救**：性能是架構的一部分。從第一行程式碼開始，就必須考慮到它。
+
+-----
+
+### **【核心判斷】**
+
+✅ **值得做**：需求明確，技術路徑清晰。這不是一個需要發明新演算法的專案，而是一個需要嚴格執行已知最佳實踐的工程挑戰。
+
+### **【關鍵洞察】**
+
+  * **數據結構**：遊戲狀態的核心是幾個巨大的陣列或字典：`active_enemies`, `active_projectiles`, `pooled_objects`。所有遊戲邏輯都是圍繞著高效地迭代和操作這些集合展開的。
+  * **複雜度**：最大的複雜性來自於 Godot 節點系統的便利性所帶來的誘惑。濫用 `_process` 和信號會導致所謂的「義大利麵條式程式碼」。我們將用單例和清晰的數據流來消除這種複雜性。
+  * **風險點**：最大的風險依然是**性能崩潰**和**程式碼腐爛**。前者來自於錯誤的節點選擇（比如為敵人用 `CharacterBody2D`），後者來自於沒有紀律的檔案結構。
+
+-----
+
+## **終極系統架構與檔案藍圖 (The Definitive Blueprint)**
+
+這是你們專案的根目錄。每一個檔案和資料夾都有其存在的唯一理由。
+
+```
+/culinary-kaiju-chef
+├── .gitignore
+├── project.godot
+├── addons/
+│   ├── godot-admob-android/
+│   └── GodotSteam/
+├── assets/
+│   ├── audio/
+│   │   ├── sfx/
+│   │   └── music/
+│   ├── fonts/
+│   ├── graphics/
+│   │   ├── effects/
+│   │   ├── environment/
+│   │   ├── icons/
+│   │   └── spritesheets/
+│   └── shaders/
+│       └── hit_flash.gdshader
+├── features/                # 「遊戲性」所在之處 (What the game IS)
+│   ├── characters/
+│   │   ├── character_data_chef.tres
+│   │   └── character_data_baker.tres
+│   ├── enemies/
+│   │   ├── base_enemy/
+│   │   │   ├── base_enemy.tscn       # Area2D 基礎場景
+│   │   │   └── base_enemy.gd
+│   │   ├── enemy_data/
+│   │   │   ├── onion_grunt.tres
+│   │   │   └── tomato_ranger.tres
+│   │   └── enemy_scenes/
+│   │       ├── enemy_onion_grunt.tscn
+│   │       └── enemy_tomato_ranger.tscn
+│   ├── items/
+│   │   ├── item_data/
+│   │   │   ├── passive_garlic_aura.tres
+│   │   │   └── weapon_upgrade_spinach.tres
+│   │   └── xp_gem/
+│   │       ├── xp_gem.tscn
+│   │       └── xp_gem.gd
+│   ├── player/
+│   │   ├── player.tscn             # CharacterBody2D
+│   │   ├── player.gd
+│   │   └── states/
+│   │       ├── player_state.gd
+│   │       ├── move_state.gd
+│   │       └── dead_state.gd
+│   └── weapons/
+│       ├── base_weapon/
+│       │   ├── base_weapon.gd
+│       │   └── base_projectile.tscn  # Area2D 基礎投射物
+│       ├── weapon_data/
+│       │   └── throwing_knives.tres
+│       └── weapon_scenes/
+│           └── throwing_knives.tscn
+└── src/                     # 「系統」所在之處 (HOW the game RUNS)
+    ├── autoload/
+    │   ├── EventBus.gd           # 全域事件總線
+    │   ├── Game.gd               # 遊戲狀態管理器
+    │   ├── ObjectPool.gd         # 對象池
+    │   └── PlayerData.gd         # 玩家元數據 (存檔)
+    ├── core/
+    │   ├── data/
+    │   │   ├── CharacterData.gd    # class_name CharacterData
+    │   │   ├── EnemyData.gd        # class_name EnemyData
+    │   │   ├── ItemData.gd         # class_name ItemData
+    │   │   └── WeaponData.gd       # class_name WeaponData
+    │   ├── spawner/
+    │   │   ├── EnemySpawner.gd
+    │   │   └── spawn_wave.gd       # class_name SpawnWave (Resource)
+    │   └── utils/
+    │       └── state_machine.gd
+    ├── main/
+    │   ├── main.tscn               # 遊戲主場景
+    │   └── main.gd
+    └── ui/
+        ├── components/
+        │   └── upgrade_card.tscn
+        ├── screens/
+        │   ├── hud.tscn
+        │   ├── main_menu.tscn
+        │   └── upgrade_screen.tscn
+        ├── theme/
+        │   ├── generate_theme.gd   # 使用 ThemeGen 的程式碼
+        │   └── main_theme.tres
+        └── ui.gd                   # UI 管理器
+```
+
+-----
+
+### **關鍵檔案深度解析與程式碼骨架**
+
+#### **1. `src/autoload/ObjectPool.gd`**
+
+  * **目的**：管理所有需要頻繁實例化和銷毀的物件。這是專案的性能基石。**在遊戲中，我們從不呼叫 `queue_free()`**。
+  * **位置**：`autoload/` 資料夾，設定為全域單例。
+  * **程式碼骨架**:
+    ```gdscript
+    # ObjectPool.gd
+    extends Node
+
+    var pool: Dictionary = {}
+
+    # 預先填充池，可在遊戲加載時呼叫
+    func pre_populate(scene: PackedScene, count: int) -> void:
+        if not pool.has(scene):
+            pool[scene] = []
+        for i in range(count):
+            var instance = scene.instantiate()
+            instance.name = scene.resource_path.get_file().split(".")[0] + "_" + str(i)
+            pool[scene].append(instance)
+            # 確保物件在被取出前是不可見和不處理的
+            instance.get_parent().remove_child(instance) if instance.get_parent() else pass
+            instance.set_process(false)
+            instance.set_physics_process(false)
+            instance.hide()
+
+
+    # 從池中請求一個物件
+    func request(scene: PackedScene) -> Node:
+        if not pool.has(scene) or pool[scene].is_empty():
+            # 如果池為空，動態創建一個，但這應該盡量避免
+            return scene.instantiate()
+
+        var instance = pool[scene].pop_front()
+        return instance
+
+    # 將物件返回池中
+    func reclaim(instance: Node) -> void:
+        var scene = instance.scene_file_path
+        if not pool.has(scene):
+            pool[scene] = []
+
+        # 確保物件的父節點是 null，否則下次添加會出錯
+        instance.get_parent().remove_child(instance) if instance.get_parent() else pass
+
+        # 重置狀態
+        instance.set_process(false)
+        instance.set_physics_process(false)
+        instance.hide()
+        # 你可能還需要呼叫一個 'reset_state()' 函數來重置物件的內部變數
+        if instance.has_method("reset_state"):
+            instance.reset_state()
+
+        pool[scene].push_back(instance)
+    ```
+
+#### **2. `features/enemies/base_enemy/base_enemy.gd`**
+
+  * **目的**：所有敵人的基類。**它必須是 `Area2D`**，而不是 `CharacterBody2D`。我們手動控制它的移動和碰撞。
+  * **位置**：`features/enemies/base_enemy/`
+  * **程式碼骨架**:
+    ```gdscript
+    # base_enemy.gd
+    extends Area2D
+
+    @export var data: EnemyData
+
+    var health: int
+    var speed: float
+    var velocity: Vector2 = Vector2.ZERO
+    var target: Node2D
+
+    func _ready() -> void:
+        # 連接 hurtbox 信號
+        # $Hurtbox.area_entered.connect(_on_hurtbox_area_entered)
+        target = get_tree().get_first_node_in_group("player")
+
+    func initialize(pos: Vector2, enemy_data: EnemyData) -> void:
+        self.global_position = pos
+        self.data = enemy_data
+        self.health = data.health
+        self.speed = data.speed
+        # 啟用處理
+        set_physics_process(true)
+        show()
+
+
+    func _physics_process(delta: float) -> void:
+        if not is_instance_valid(target):
+            return
+
+        # 1. 計算朝向玩家的方向
+        var direction = (target.global_position - self.global_position).normalized()
+        velocity = direction * speed
+
+        # 2. (可選但推薦) 計算分離行為
+        # 這是避免敵人堆疊的關鍵。每幾幀執行一次以優化性能。
+        if Engine.get_physics_frames() % 4 == get_instance_id() % 4:
+            var separation_vector = _get_separation_vector()
+            velocity += separation_vector * 0.5 # 調整權重
+
+        # 3. 手動移動
+        global_position += velocity * delta
+
+
+    func _get_separation_vector() -> Vector2:
+        # 這是手動空間查詢的核心
+        var space_state = get_world_2d().direct_space_state
+        var query = PhysicsShapeQueryParameters2D.new()
+        query.shape = CircleShape2D.new()
+        query.shape.radius = 40 # 查詢半徑，應大於碰撞形狀
+        query.transform = global_transform
+        query.collision_mask = self.collision_layer # 只查詢同層的敵人
+        query.exclude = [self.get_rid()]
+
+        var results: Array = space_state.intersect_shape(query)
+        var push_vector: Vector2 = Vector2.ZERO
+        if not results.is_empty():
+            for result in results:
+                var neighbor = result.collider
+                push_vector += (global_position - neighbor.global_position).normalized()
+        return push_vector
+
+
+    func take_damage(amount: int) -> void:
+        health -= amount
+        # 可以在此處觸發閃爍效果
+        if health <= 0:
+            die()
+
+    func die() -> void:
+        # 播放死亡動畫/特效，掉落經驗等
+        # 然後將自己還給對象池
+        ObjectPool.reclaim(self)
+
+    func reset_state() -> void:
+        # 重置所有變數，為下次使用做準備
+        self.velocity = Vector2.ZERO
+        # ...
+    ```
+
+#### **3. `src/core/spawner/EnemySpawner.gd`**
+
+  * **目的**：一個純邏輯節點，負責根據時間軸讀取波次數據 (`SpawnWave` 資源)，並從 `ObjectPool` 請求敵人實例。
+  * **位置**：附加到 `main.tscn` 中的一個 `Node` 上。
+  * **程式碼骨架**:
+    ```gdscript
+    # EnemySpawner.gd
+    extends Node
+
+    @export var spawn_waves: Array[SpawnWave]
+
+    var time: float = 0.0
+    var current_wave_index: int = 0
+
+    func _process(delta: float) -> void:
+        time += delta
+
+        if current_wave_index >= spawn_waves.size():
+            return # 所有波次已生成
+
+        var current_wave = spawn_waves[current_wave_index]
+
+        if time >= current_wave.start_time:
+            # 觸發波次
+            spawn_enemies(current_wave)
+            current_wave_index += 1
+
+
+    func spawn_enemies(wave: SpawnWave) -> void:
+        # 在螢幕外的隨機位置生成敵人
+        var player_pos = get_tree().get_first_node_in_group("player").global_position
+        var screen_size = get_viewport().get_visible_rect().size
+
+        for i in range(wave.count):
+            var enemy_scene = wave.enemy_data.scene
+            var enemy_instance = ObjectPool.request(enemy_scene) as Area2D
+
+            # 計算生成位置 (圓形或矩形)
+            var spawn_pos = _get_random_spawn_position(player_pos, screen_size * 1.2)
+
+            # 將實例添加到場景樹
+            get_tree().get_root().add_child(enemy_instance)
+            enemy_instance.initialize(spawn_pos, wave.enemy_data)
+    ```
+
+#### **4. 數據流與系統交互**
+
+理解數據如何在這些系統之間流動是關鍵。
+
+1.  **遊戲開始**：`main.gd` 初始化 `Game.gd` 中的遊戲狀態（時間、分數等）。`EnemySpawner.gd` 開始計時。
+2.  **敵人生成**：`EnemySpawner.gd` 達到一個 `SpawnWave` 的時間點，它向 `ObjectPool.gd` **請求**一個敵人場景的實例。
+3.  **實例初始化**：`EnemySpawner.gd` 呼叫敵人實例的 `initialize()` 方法，傳遞其 `EnemyData` 資源和初始位置。該實例被加入到場景樹中。
+4.  **敵人行為**：敵人的 `_physics_process` 獨立運行，追蹤玩家並手動更新其 `global_position`。
+5.  **玩家攻擊**：玩家的武器（由 `player.gd` 管理）創建一個投射物實例（同樣來自 `ObjectPool`）。
+6.  **傷害判定**：投射物的 `Area2D`（`Hitbox`）與敵人的 `Area2D`（`Hurtbox`）發生碰撞。投射物呼叫敵人的 `take_damage()` 方法。
+7.  **敵人死亡**：敵人 `take_damage()` 後生命值歸零，呼叫 `die()`。`die()` 在播放完特效後，向 `ObjectPool.gd` **返還**自己。它從場景樹中移除，但其實例在記憶體中仍然存在，等待下一次被請求。
+
+這是一個乾淨、高效的循環。數據流是單向的，系統之間的耦合度極低。這就是「好品味」的架構。
+
+-----
+
+### **最終指令**
+
+停止閱讀。開始按照這個藍圖編寫程式碼。
+
+1.  **建立目錄結構**：立即在你們的專案中創建所有這些資料夾。
+2.  **創建核心數據資源**：在 `src/core/data/` 中創建 `CharacterData.gd`, `EnemyData.gd` 等腳本，並為它們添加 `class_name`。
+3.  **編寫 `ObjectPool.gd`**：這是你們需要完成的第一個核心系統。
+4.  **建立 `base_enemy.tscn` 和 `base_enemy.gd`**：確保它是一個 `Area2D` 並實現手動移動。
+5.  **搭建 `main.tscn`**：加入玩家、UI、以及掛載了 `EnemySpawner.gd` 的節點。
+
+不要再尋找更聰明或更簡單的方法。這就是最簡單、最直接、最不會出錯的方法。現在，去執行。
