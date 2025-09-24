@@ -1,58 +1,54 @@
-# ObjectPool.gd
+# src/autoload/ObjectPool.gd
 extends Node
 
 var pool: Dictionary = {}
 
-# 預先填充池，可在遊戲加載時呼叫
+# Use the scene's resource path as the key for consistency
 func pre_populate(scene: PackedScene, count: int) -> void:
-    if not pool.has(scene):
-        pool[scene] = []
+    var scene_path = scene.resource_path
+    if not pool.has(scene_path):
+        pool[scene_path] = []
     for i in range(count):
         var instance = scene.instantiate()
         instance.name = scene.resource_path.get_file().split(".")[0] + "_" + str(i)
-        pool[scene].append(instance)
-        # 確保物件在被取出前是不可見和不處理的
-        instance.get_parent().remove_child(instance) if instance.get_parent() else pass
-        instance.set_process(false)
-        instance.set_physics_process(false)
-        instance.hide()
+        pool[scene_path].append(instance)
+        # This check is important for when the pool is populated on startup
+        if instance.get_parent():
+            instance.get_parent().remove_child(instance)
 
-# 從池中請求一個物件
 func request(scene: PackedScene) -> Node:
-    if not pool.has(scene) or pool[scene].is_empty():
-        # 如果池為空，動態創建一個，但這應該盡量避免
-        return scene.instantiate()
+    var scene_path = scene.resource_path
+    if not pool.has(scene_path) or pool[scene_path].is_empty():
+        # If the pool is empty, dynamically create one, but this should be avoided.
+        var new_instance = scene.instantiate()
+        new_instance.scene_file_path = scene_path # Manually set the path for consistency
+        return new_instance
 
-    var instance = pool[scene].pop_front()
+    var instance = pool[scene_path].pop_front()
+    # The instance is already parent-less and inactive from being reclaimed.
+    # No need to change state here, the caller will do that.
     return instance
 
-# 將物件返回池中
 func reclaim(instance: Node) -> void:
-    var scene = instance.scene_file_path
-    if not pool.has(scene):
-        pool[scene] = []
+    # scene_file_path is set automatically when a node is instanced from a scene.
+    var scene_path = instance.scene_file_path
+    if scene_path.is_empty():
+        push_error("Cannot reclaim a node that was not instanced from a scene.")
+        instance.queue_free() # Can't pool it, so just free it.
+        return
 
-    # 確保物件的父節點是 null，否則下次添加會出錯
-    instance.get_parent().remove_child(instance) if instance.get_parent() else pass
+    if not pool.has(scene_path):
+        pool[scene_path] = []
 
-    # 重置狀態
+    # Ensure the object is removed from the scene tree before pooling
+    if instance.get_parent():
+        instance.get_parent().remove_child(instance)
+
+    # Reset state for reuse
     instance.set_process(false)
     instance.set_physics_process(false)
     instance.hide()
-
-    # 你可能還需要呼叫一個 'reset_state()' 函數來重置物件的內部變數
     if instance.has_method("reset_state"):
         instance.reset_state()
 
-    pool[scene].push_back(instance)
-
-# 獲取池的統計信息
-func get_pool_stats() -> Dictionary:
-    var stats = {}
-    for scene in pool:
-        stats[scene.resource_path] = pool[scene].size()
-    return stats
-
-# 清空所有池
-func clear_all_pools() -> void:
-    pool.clear()
+    pool[scene_path].push_back(instance)

@@ -1,32 +1,42 @@
 # Godot-specific ignores
-.godot/
-export/
-*.import
+#
+# Godot-specific files that should be ignored by Git.
+# See https://docs.godotengine.org/en/latest/tutorials/io/version_control_systems.html
+# for more information.
 
-# IDE files
+# Godot 4+ project data
+.godot/
+!.godot/
+
+# Godot-specific files
+export.cfg
+export_presets.cfg
+*.translation
+*.remap
+*.rcedit
+
+# Imported translations (automatically generated from CSV files)
+*.tr
+
+# Mono-specific ignores
+.mono/
+data_*/
+mono_crash.*.json
+
+# Visual Studio Code
 .vscode/
+
+# JetBrains Rider
 .idea/
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Build outputs
+# Builds
 build/
-dist/
+Build/
+builds/
+Builds/
+bin/
+Bin/
 
-# Temporary files
-*.tmp
-*.temp
-*.log
-
-# Asset processing
-*.converted
-
-# User-specific files
-user://
+# User-specific files (should be in global gitignore)
+*.user
+*.cfg

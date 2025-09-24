@@ -115,3 +115,55 @@ https://github.com/enoch11230945/game.git
 
   * [GodotSteam](https://godotsteam.com/) - 用於 Steam 平台整合 (位於 `addons/` 目錄)。
   * [Godot AdMob Android](https://github.com/poingstudios/godot-admob-android) - 用於 Android 平台廣告變現 (位於 `addons/` 目錄)。
+
+你不需要所有文件。你需要的是一份戰場簡報，告訴你路上有哪些地雷。聽好了，這就是從 4.0 升級到 4.5 的核心變化，也是你現在開始做 4.5 遊戲必須知道的歷史包袱：
+
+1. GDScript 的進化：從選用水槍到標配火砲
+@export 語法徹底改變：忘了 export(int) 這種古老寫法。從 4.0 開始，一切都是基於 annotation 的 @export。
+
+舊：export var health = 100
+
+新：@export var health: int = 100
+
+重點：這是最常見的語法不相容，所有 3.x 的教學在這裡都會錯。
+
+Signal (信號) 的語法糖：await 成了內建關鍵字，取代了 yield。
+
+舊：yield(get_tree().create_timer(1.0), "timeout")
+
+新：await get_tree().create_timer(1.0).timeout
+
+重點：程式碼更簡潔，但邏輯一樣。所有非同步操作都該用 await。
+
+Callable (可呼叫對象)：Callable 取代了舊的 FuncRef，所有函數傳遞都變得更安全、更明確。
+
+2. 渲染與視覺：從 GLES3 到 Vulkan 的巨變
+渲染器完全重寫：Godot 4 的核心是 Vulkan 渲染器。所有 3.x 的著色器 (.shader) 程式碼幾乎都要重寫。
+
+環境與光照：WorldEnvironment 節點的作用被大大增強。GI (全域光照) 方案，如 SDFGI 和 VoxelGI，是 4.x 的標配，但你需要理解它們的效能成本。
+
+Material (材質) 系統：StandardMaterial3D 的參數和 3.x 完全不同。ORMMaterial3D 被整合進來。
+
+3. 物理：從自研到分裂
+內建物理引擎換了：Godot 4.0 預設使用自家的 GodotPhysics，不再是 Bullet。
+
+節點改名：這是最致命的陷阱之一。
+
+KinematicBody2D/3D -> CharacterBody2D/3D
+
+Area2D/3D -> Area2D/3D (沒變，但用法有差)
+
+RigidBody2D/3D -> RigidBody2D/3D (沒變，但 API 有差)
+
+移動邏輯徹底改變：move_and_slide() 不再需要自己傳遞 velocity 和 up_direction。它現在直接使用 CharacterBody 的 velocity 屬性。你只需要設定 velocity，然後呼叫 move_and_slide()，物理引擎會自動處理剩下的事並更新 velocity。
+
+舊：velocity = move_and_slide(velocity, Vector3.UP)
+
+新：velocity = velocity (在呼叫 move_and_slide() 前設定)，然後 move_and_slide()
+
+4. API 的大規模重命名和清理
+Tween (補間動畫)：舊的 Tween 節點被廢棄。現在用 create_tween() 來建立基於程式碼的臨時 Tween 物件，語法更流暢。
+
+Class 名稱：很多類別為了清晰化而改名，例如 Spatial 節點現在叫做 Node3D。Viewport 的很多底層 API 也變了。
+
+Input (輸入)：Input.is_action_just_pressed() 仍然有效，但 4.x 鼓勵使用新的 InputEvent 系統。

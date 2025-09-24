@@ -1,53 +1,36 @@
-# xp_gem.gd
+# features/items/xp_gem/xp_gem.gd
 extends Area2D
 
-class_name XPGem
+var experience_amount: int = 5
+var speed: float = 100.0
+var acceleration: float = 2.5
 
-@export var xp_value: int = 10
-@export var collect_radius: float = 30.0
-@export var move_speed: float = 200.0
+var target: Node2D = null
 
-var target: Node2D
-var is_collected: bool = false
+@onready var pickup_radius = $PickupRadius
 
-func _ready() -> void:
-    # 設置碰撞層
-    collision_layer = 5  # xp_gems
-    collision_mask = 2    # player
+func _ready():
+    # The main area detects the player for collection
+    self.area_entered.connect(_on_area_entered)
+    # The pickup radius detects the player to start homing in
+    pickup_radius.area_entered.connect(_on_pickup_radius_area_entered)
 
-    # 連接信號
-    area_entered.connect(_on_area_entered)
+func _physics_process(delta: float):
+    if is_instance_valid(target):
+        # Move towards the player
+        var direction = (target.global_position - self.global_position).normalized()
+        speed += acceleration
+        global_position += direction * speed * delta
 
-    # 獲取玩家引用
-    target = get_tree().get_first_node_in_group("player")
+func _on_area_entered(area: Area2D):
+    # This assumes the player has an area for collecting items
+    if area.is_in_group("player_pickup_area"):
+        Game.add_experience(experience_amount)
+        # For now, just free. Later, reclaim to pool.
+        queue_free()
 
-func _physics_process(delta: float) -> void:
-    if is_collected and target:
-        # 向玩家移動
-        var direction = (target.global_position - global_position).normalized()
-        global_position += direction * move_speed * delta
-
-        # 如果足夠接近，收集
-        if global_position.distance_to(target.global_position) < 10.0:
-            collect()
-
-func _on_area_entered(area: Area2D) -> void:
-    # 檢查是否被玩家收集器觸碰
-    if area.collision_layer == 2:  # player
-        collect()
-
-func collect() -> void:
-    if not is_collected:
-        is_collected = true
-
-        # 發出XP獲得事件
-        EventBus.emit_player_gained_xp(xp_value)
-
-        # 將自己還給物件池
-        ObjectPool.reclaim(self)
-
-func reset_state() -> void:
-    is_collected = false
-    target = null
-    hide()
-    set_physics_process(false)
+func _on_pickup_radius_area_entered(area: Area2D):
+    if area.is_in_group("player_pickup_area"):
+        # Once a target is acquired, we don't need the pickup radius anymore
+        target = area
+        pickup_radius.queue_free() # Optimization

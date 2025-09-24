@@ -1,7 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://d5i5i5i5i5i5i5i5"]
+[gd_scene load_steps=5 format=3 uid="uid://d5i5i5i5i5i5i5i5"]
 
 [ext_resource type="Script" path="res://features/player/player.gd" id="1_player"]
 [ext_resource type="CircleShape2D" uid="uid://d6j6j6j6j6j6j6j6" path="res://features/player/collision_shape.tres" id="2_collision_shape"]
+
+[sub_resource type="CircleShape2D" id="SubResource_pickup"]
+radius = 100.0
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_player")
@@ -10,7 +13,19 @@ script = ExtResource("1_player")
 shape = ExtResource("2_collision_shape")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(0, 1, 0, 1)  # 綠色作為玩家標識
+modulate = Color(0, 1, 0, 1)
+scale = Vector2(4, 4)  # Make player even more visible
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(1.5, 1.5)
+zoom = Vector2(1.0, 1.0)  # No zoom for maximum visibility
+current = true
+position_smoothing_enabled = false  # Disable smoothing for instant response
+
+[node name="WeaponTimer" type="Timer" parent="."]
+
+[node name="PickupArea" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 32
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PickupArea"]
+shape = SubResource("SubResource_pickup")

@@ -1,113 +1,112 @@
-# base_enemy.gd
+# features/enemies/base_enemy/base_enemy.gd
 extends Area2D
 
-class_name BaseEnemy
+const XpGemScene = preload("res://features/items/xp_gem/xp_gem.tscn")
+const HitFlashShader = preload("res://assets/shaders/hit_flash.gdshader")
 
 @export var data: EnemyData
 
-var health: int
-var speed: float
-var damage: int
-var xp_value: int
+var health: int = 10
+var speed: float = 150.0
+var damage: int = 5
 var velocity: Vector2 = Vector2.ZERO
 var target: Node2D
-var separation_strength: float
 
-# 緩存的引用，避免重複獲取
-var _space_state: PhysicsDirectSpaceState2D
-var _last_separation_update: int = 0
+var separation_query: PhysicsShapeQueryParameters2D
+var separation_shape: CircleShape2D
 
-func _ready() -> void:
-    # 獲取空間狀態引用
-    _space_state = get_world_2d().direct_space_state
+@onready var sprite = $Sprite2D
 
-    # 獲取玩家引用
+func _ready():
+    set_collision_layer_value(3, true)
+    set_collision_mask_value(4, true)
+    
     target = get_tree().get_first_node_in_group("player")
 
-    # 設置碰撞層
-    collision_layer = 3  # enemies
-    collision_mask = 4    # player_weapons
+    separation_query = PhysicsShapeQueryParameters2D.new()
+    separation_shape = CircleShape2D.new()
+    separation_shape.radius = 40
+    separation_query.shape = separation_shape
+    separation_query.collision_mask = self.collision_layer
+    separation_query.exclude = [self.get_rid()]
 
-    # 連接信號
-    area_entered.connect(_on_area_entered)
+    self.body_entered.connect(_on_body_entered)
 
-func initialize(pos: Vector2, enemy_data: EnemyData) -> void:
+    # Ensure the sprite has a ShaderMaterial for the hit flash effect
+    if not sprite.material or not sprite.material is ShaderMaterial:
+        sprite.material = ShaderMaterial.new()
+    sprite.material.shader = HitFlashShader
+
+func initialize(pos: Vector2, enemy_data):
     self.global_position = pos
     self.data = enemy_data
-    self.health = data.health
-    self.speed = data.speed
-    self.damage = data.damage
-    self.xp_value = data.xp_value
-    self.separation_strength = data.separation_strength
 
-    # 啟用處理
+    # Handle both EnemyData objects and dictionaries
+    if enemy_data is EnemyData:
+        self.health = enemy_data.health
+        self.speed = enemy_data.speed
+        self.damage = enemy_data.damage
+    elif enemy_data is Dictionary:
+        self.health = enemy_data.get("health", 50)
+        self.speed = enemy_data.get("speed", 100.0)
+        self.damage = enemy_data.get("damage", 10)
+
     set_physics_process(true)
     show()
 
-func _physics_process(delta: float) -> void:
+func _physics_process(delta: float):
     if not is_instance_valid(target):
+        velocity = Vector2.ZERO
         return
 
-    # 1. 計算朝向玩家的方向
-    var direction = (target.global_position - global_position).normalized()
-    velocity = direction * speed
+    var direction_to_target = (target.global_position - self.global_position).normalized()
+    var target_velocity = direction_to_target * speed
 
-    # 2. 計算分離行為（每4幀更新一次以優化性能）
+    var separation_velocity = Vector2.ZERO
     if Engine.get_physics_frames() % 4 == get_instance_id() % 4:
-        var separation_vector = _get_separation_vector()
-        velocity += separation_vector * separation_strength
+        separation_velocity = _get_separation_vector() * speed * 0.5
 
-    # 3. 手動移動
+    velocity = target_velocity + separation_velocity
     global_position += velocity * delta
 
 func _get_separation_vector() -> Vector2:
-    # 創建圓形查詢形狀
-    var query = PhysicsShapeQueryParameters2D.new()
-    query.shape = CircleShape2D.new()
-    query.shape.radius = 40.0  # 查詢半徑，應大於碰撞形狀
-    query.transform = global_transform
-    query.collision_mask = 3  # 只查詢敵人層
-    query.exclude = [self.get_rid()]
-
-    var results: Array = _space_state.intersect_shape(query)
+    var space_state = get_world_2d().direct_space_state
+    separation_query.transform = global_transform
+    var results: Array = space_state.intersect_shape(separation_query)
     var push_vector: Vector2 = Vector2.ZERO
-
     if not results.is_empty():
         for result in results:
             var neighbor = result.collider
-            if neighbor != self:
-                var distance = global_position.distance_to(neighbor.global_position)
-                if distance > 0:
-                    push_vector += (global_position - neighbor.global_position).normalized() / distance
+            if is_instance_valid(neighbor):
+                push_vector += (global_position - neighbor.global_position).normalized()
+    return push_vector.normalized()
 
-    return push_vector
-
-func _on_area_entered(area: Area2D) -> void:
-    # 檢查是否被玩家武器擊中
-    if area.collision_layer == 4:  # player_weapons
-        take_damage(area.get_parent().damage)
-
-func take_damage(amount: int) -> void:
+func take_damage(amount: int):
     health -= amount
+    
+    # Trigger the hit flash effect
+    var tween = create_tween()
+    tween.tween_property(sprite.material, "shader_parameter/flash_modifier", 1.0, 0.05)
+    tween.tween_property(sprite.material, "shader_parameter/flash_modifier", 0.0, 0.1)
 
-    # 可以在此處觸發閃爍效果
     if health <= 0:
         die()
 
-func die() -> void:
-    # 發出敵人死亡事件
-    EventBus.emit_enemy_died(global_position, xp_value)
-
-    # 播放死亡特效（如果有的話）
-
-    # 將自己還給物件池
+func die():
+    var gem = XpGemScene.instantiate()
+    get_tree().current_scene.add_child(gem)
+    gem.global_position = self.global_position
     ObjectPool.reclaim(self)
 
-func reset_state() -> void:
-    # 重置所有變數，為下次使用做準備
-    self.velocity = Vector2.ZERO
-    self.health = 0
-    self.data = null
-    self.target = null
-    hide()
-    set_physics_process(false)
+func reset_state():
+    velocity = Vector2.ZERO
+    health = 10
+    speed = 150
+    damage = 5
+    data = null
+
+func _on_body_entered(body: Node):
+    if body.is_in_group("player"):
+        if body.has_method("take_damage"):
+            body.take_damage(damage)
+            die()
