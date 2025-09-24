@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[node name="root" type="Node"]
+
+[node name="EnemySpawner" type="Node" parent="."]
+
+[node name="SpawnTimer" type="Timer" parent="EnemySpawner"]

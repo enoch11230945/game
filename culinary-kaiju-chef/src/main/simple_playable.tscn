@@ -1,0 +1,36 @@
+[gd_scene load_steps=2 format=3 uid="uid://simple_playable"]
+
+[ext_resource type="Script" path="res://src/main/simple_node_player.gd" id="1_player"]
+
+[node name="SimplePlayable" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+current = true
+zoom = Vector2(1, 1)
+position_smoothing_enabled = true
+position_smoothing_speed = 5.0
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="Player" type="Node2D" parent="."]
+position = Vector2(640, 360)
+script = ExtResource("1_player")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
+modulate = Color(0, 1, 0, 1)
+scale = Vector2(2, 2)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = CircleShape2D.new()
+radius = 32.0
+
+[node name="Instructions" type="Label" parent="."]
+offset_left = 440.0
+offset_top = 50.0
+offset_right = 840.0
+offset_bottom = 90.0
+text = "🎮 PLAYABLE! Use WASD keys to move the green square!"
+horizontal_alignment = 1

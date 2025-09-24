@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SpawnWave" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/core/spawner/spawn_wave.gd" id="1_wdata"]
+[ext_resource type="Resource" path="res://features/enemies/enemy_data/onion_grunt.tres" id="2_edata"]
+
+[resource]
+script = ExtResource("1_wdata")
+start_time = 5.0
+enemy_data = ExtResource("2_edata")
+count = 10
+spawn_interval = 0.3

@@ -1,0 +1,4 @@
+[gd_resource type="ImageTexture" load_steps=1 format=3 uid="uid://debug_texture"]
+
+[resource]
+resource_name = "DebugTexture"
