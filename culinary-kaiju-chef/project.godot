@@ -12,10 +12,12 @@ config_version=5
 
 config/name="Culinary Kaiju Chef"
 config/version="1.0.0"
-run/main_scene="res://WORKING_ULTIMATE_GAME.tscn"
+run/main_scene="res://src/main/main.tscn"
 config/features=PackedStringArray("4.5")
 
 [autoload]
+
+EventBus="*res://src/autoload/EventBus.gd"
 
 EventBus="*res://src/autoload/EventBus.gd"
 Game="*res://src/autoload/Game.gd"
