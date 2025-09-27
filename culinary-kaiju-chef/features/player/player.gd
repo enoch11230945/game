@@ -45,6 +45,9 @@ func _ready() -> void:
     var fan = DataManager.get_weapon("Fan Knife")
     if fan:
         equip_weapon(fan)
+    var piercer = DataManager.get_weapon("Piercer")
+    if piercer:
+        equip_weapon(piercer)
     
     # Connect to game events
     EventBus.player_health_changed.emit(current_health, max_health)

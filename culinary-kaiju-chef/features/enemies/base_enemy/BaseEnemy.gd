@@ -57,7 +57,18 @@ func _physics_process(delta: float) -> void:
     
     # 1. Calculate direction towards the player
     var direction_to_target = (target.global_position - self.global_position).normalized()
+    # 行為層：速度基礎
     velocity = direction_to_target * speed
+    # Speed Demon wobble
+    if data and data.wobble_amplitude > 0.0 and data.wobble_frequency > 0.0:
+        var t = Time.get_ticks_msec() / 1000.0
+        var perp = Vector2(-direction_to_target.y, direction_to_target.x)
+        velocity += perp * data.wobble_amplitude * sin(t * data.wobble_frequency + float(get_instance_id() % 1024))
+    # Tank Brute charge
+    if data and data.charge_interval > 0.1 and data.charge_multiplier > 1.0 and data.charge_duration > 0.05:
+        var phase = fmod(Time.get_ticks_msec()/1000.0, data.charge_interval)
+        if phase < data.charge_duration:
+            velocity += direction_to_target * speed * (data.charge_multiplier - 1.0)
     
     # 2. (Performance Optimization) Calculate separation force to avoid clumping
     # This is staggered across frames to maintain 60fps with hundreds of enemies

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/data/WeaponData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+name = "Piercer"
+damage = 25
+cooldown = 1.2
+speed = 500.0
+range = 600.0
+projectile_count = 1
+piercing = 4
+lifetime = 2.5
+spread_angle = 0.0
