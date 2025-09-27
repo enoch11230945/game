@@ -41,3 +41,7 @@ func get_weapon(name: String):
 
 func get_enemy(name: String):
 	return enemies_by_name.get(name, null)
+
+func reload():
+	_load_weapon_data()
+	_load_enemy_data()
