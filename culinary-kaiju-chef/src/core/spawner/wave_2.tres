@@ -1,9 +1,13 @@
-[gd_resource type="Resource" load_steps=1 format=3 uid="uid://wave2"]
+[gd_resource type="Resource" script_class="SpawnWave" load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://src/core/spawner/spawn_wave.gd" id="1_spawn_wave"]
+[ext_resource type="Script" path="res://src/core/spawner/SpawnWave.gd" id="1"]
+[ext_resource type="Resource" path="res://features/enemies/enemy_data/onion_grunt.tres" id="2"]
 
 [resource]
-script = ExtResource("1_spawn_wave")
-count = 10
-start_time = 10.0
-enemy_data_path = "res://features/enemies/enemy_data/onion_grunt.tres"
+script = ExtResource("1")
+enemy_data = ExtResource("2")
+count = 12
+start_time = 15.0
+duration = 12.0
+required_level = 1
+required_enemies_killed = 5
