@@ -18,9 +18,9 @@ func show_choices(upgrades: Array[UpgradeData], callback: Callable) -> void:
 	pending_callback = callback
 	if current_upgrades.size() != 3:
 		return
-	button_a.text = _format_upgrade(current_upgrades[0])
-	button_b.text = _format_upgrade(current_upgrades[1])
-	button_c.text = _format_upgrade(current_upgrades[2])
+	button_a.text = _format_upgrade_preview(current_upgrades[0])
+	button_b.text = _format_upgrade_preview(current_upgrades[1])
+	button_c.text = _format_upgrade_preview(current_upgrades[2])
 	visible = true
 	get_tree().paused = true
 
@@ -44,3 +44,22 @@ func _format_upgrade(up: UpgradeData) -> String:
 	if parts.is_empty():
 		parts.append("(noop)")
 	return "%s: %s" % [up.target_weapon_name, ", ".join(parts)]
+
+func _format_upgrade_preview(up: UpgradeData) -> String:
+	# 顯示 當前 -> 升級後 對比
+	var weapon = DataManager.get_weapon(up.target_weapon_name)
+	var base_proj = weapon.projectile_count if weapon else 0
+	var proj_after = base_proj + up.add_projectiles
+	var dmg_after = weapon.damage * (up.damage_multiplier if up.damage_multiplier != 1.0 else 1.0) if weapon else 0
+	var cd_after = weapon.cooldown * (up.cooldown_multiplier if up.cooldown_multiplier != 1.0 else 1.0) if weapon else 0
+	var parts: Array[String] = []
+	if up.add_projectiles != 0:
+		parts.append("proj %d->%d" % [base_proj, proj_after])
+	if up.damage_multiplier != 1.0:
+		parts.append("dmg %d->%d" % [weapon.damage, int(dmg_after)])
+	if up.cooldown_multiplier != 1.0:
+		parts.append("cd %.2f->%.2f" % [weapon.cooldown, cd_after])
+	if parts.is_empty():
+		parts.append("(noop)")
+	return "%s | %s" % [up.target_weapon_name, ", ".join(parts)]
+

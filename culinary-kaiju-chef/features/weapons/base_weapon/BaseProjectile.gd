@@ -60,6 +60,12 @@ func _on_area_entered(area: Area2D) -> void:
         # Check if we should pierce or be destroyed
         if enemies_hit > piercing:
             call_deferred("_reclaim_self")
+        else:
+            # 穿透時短暫高亮
+            if sprite:
+                sprite.modulate = Color(1,0.9,0.3,1)
+                var tween = create_tween()
+                tween.tween_property(sprite, "modulate", Color.WHITE, 0.08)
 
 func _on_lifetime_timeout() -> void:
     call_deferred("_reclaim_self")
