@@ -1,0 +1,30 @@
+[gd_resource type="BossData" script_class="BossData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/data/BossData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+boss_name = "🌶️ Pepper Artillery"
+description = "Second boss - ranged barrage attacks"
+base_health = 1200
+base_damage = 35
+base_speed = 50.0
+base_xp_value = 450
+boss_type = "ARTILLERY"
+phase_count = 3
+sprite_texture_path = "res://assets/sprites/bosses/pepper_artillery.png"
+scale_factor = 2.2
+attack_patterns = ["projectile_barrage", "laser_sweep", "mortar_rain"]
+special_abilities = ["shield_barrier", "teleport_escape", "explosive_finale"]
+phase_transitions = [0.7, 0.3]
+damage_resistance = {"fire": 0.5, "physical": 0.2}
+status_immunities = ["burn", "slow"]
+guaranteed_drops = ["boss_chest", "weapon_evolution_stone"]
+drop_chances = {"legendary_upgrade": 0.15, "gold_bonus": 1.0}
+meta_currency_reward = 250
+boss_music_path = "res://assets/audio/bosses/pepper_artillery_theme.ogg"
+death_sound_path = "res://assets/audio/bosses/pepper_artillery_death.ogg"
+spawn_effect_path = "res://assets/vfx/artillery_spawn_smoke.tscn"
+spawn_time_minutes = 10
+spawn_wave_requirement = 0
+required_kills = 300

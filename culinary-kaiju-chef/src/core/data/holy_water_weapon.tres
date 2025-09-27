@@ -1,0 +1,23 @@
+[gd_resource type="WeaponData" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/data/WeaponData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+weapon_name = "💧 Holy Water"
+description = "Creates damaging puddles on the ground"
+weapon_type = "AREA_OF_EFFECT"
+base_damage = 25
+base_cooldown = 2.0
+base_range = 200.0
+projectile_speed = 150.0
+projectile_count = 3
+base_knockback = 0.0
+base_crit_chance = 0.1
+sprite_texture_path = "res://assets/sprites/weapons/holy_water.png"
+projectile_texture_path = "res://assets/sprites/weapons/water_puddle.png"
+sound_effect_path = "res://assets/audio/weapons/holy_water.ogg"
+special_effects = ["area_damage", "damage_over_time", "random_targeting"]
+damage_type = "HOLY"
+evolution_requirements = ["max_level", "spell_power"]
+evolved_weapon = "divine_flood_weapon"

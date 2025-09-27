@@ -1,0 +1,23 @@
+[gd_resource type="WeaponData" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/data/WeaponData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+weapon_name = "🧋 Bubble Tea Cannon"
+description = "Bouncing projectiles that split on impact"
+weapon_type = "BOUNCING"
+base_damage = 18
+base_cooldown = 1.0
+base_range = 160.0
+projectile_speed = 150.0
+projectile_count = 2
+base_knockback = 6.0
+base_crit_chance = 0.1
+sprite_texture_path = "res://assets/sprites/weapons/bubble_tea.png"
+projectile_texture_path = "res://assets/sprites/weapons/tea_bubble.png"
+sound_effect_path = "res://assets/audio/weapons/bubble_tea.ogg"
+special_effects = ["bouncing", "split_on_impact", "bubble_trail"]
+damage_type = "MAGICAL"
+evolution_requirements = ["max_level", "bubble_mastery"]
+evolved_weapon = "tsunami_tea_weapon"

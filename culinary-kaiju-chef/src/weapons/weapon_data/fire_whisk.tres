@@ -1,0 +1,14 @@
+[gd_resource type="WeaponData" format=3]
+
+[resource]
+weapon_name = "Fire Whisk"
+description = "Spins around the player, dealing damage to nearby enemies"
+icon = null
+base_damage = 8.0
+base_cooldown = 2.0
+base_range = 120.0
+weapon_type = "orbital"
+projectile_count = 1
+projectile_speed = 0.0
+evolution_weapon = null
+evolution_item = null

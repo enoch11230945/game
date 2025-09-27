@@ -1,0 +1,30 @@
+[gd_resource type="BossData" script_class="BossData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/data/BossData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+boss_name = "👑 King Onion"
+description = "First boss - spawns minions and charges"
+base_health = 800
+base_damage = 40
+base_speed = 80.0
+base_xp_value = 300
+boss_type = "SWARM_LORD"
+phase_count = 2
+sprite_texture_path = "res://assets/sprites/bosses/king_onion.png"
+scale_factor = 2.5
+attack_patterns = ["minion_spawn", "charge_attack", "area_slam"]
+special_abilities = ["summon_onion_guards", "rage_mode", "damage_aura"]
+phase_transitions = [0.5]
+damage_resistance = {"physical": 0.1}
+status_immunities = ["stun"]
+guaranteed_drops = ["boss_chest"]
+drop_chances = {"rare_upgrade": 0.3, "gold_bonus": 1.0}
+meta_currency_reward = 150
+boss_music_path = "res://assets/audio/bosses/king_onion_theme.ogg"
+death_sound_path = "res://assets/audio/bosses/king_onion_death.ogg"
+spawn_effect_path = "res://assets/vfx/boss_spawn_circle.tscn"
+spawn_time_minutes = 5
+spawn_wave_requirement = 0
+required_kills = 100

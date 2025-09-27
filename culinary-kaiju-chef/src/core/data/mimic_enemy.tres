@@ -1,0 +1,21 @@
+[gd_resource type="EnemyData" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/data/EnemyData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+enemy_name = "🎭 Mimic Mushroom"
+description = "Copies player movement patterns"
+base_health = 45
+base_damage = 16
+base_speed = 110.0
+base_xp_value = 12
+behavior_type = "MIMIC"
+sprite_texture_path = "res://assets/sprites/enemies/mimic_mushroom.png"
+scale_factor = 1.0
+spawn_weight = 8
+special_abilities = ["copy_player_movement", "prediction_attack"]
+damage_resistance = {}
+status_immunities = []
+prediction_time = 1.5
+copy_delay = 0.5

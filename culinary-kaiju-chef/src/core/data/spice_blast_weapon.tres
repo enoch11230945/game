@@ -1,0 +1,23 @@
+[gd_resource type="WeaponData" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/data/WeaponData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+weapon_name = "🌶️ Spice Blast"
+description = "Explosive projectiles with area damage"
+weapon_type = "EXPLOSIVE"
+base_damage = 40
+base_cooldown = 1.5
+base_range = 250.0
+projectile_speed = 200.0
+projectile_count = 1
+base_knockback = 15.0
+base_crit_chance = 0.15
+sprite_texture_path = "res://assets/sprites/weapons/spice_blast.png"
+projectile_texture_path = "res://assets/sprites/weapons/spice_bomb.png"
+sound_effect_path = "res://assets/audio/weapons/spice_blast.ogg"
+special_effects = ["explosion", "burn_effect", "enemy_targeting"]
+damage_type = "FIRE"
+evolution_requirements = ["max_level", "fire_mastery"]
+evolved_weapon = "inferno_spice_weapon"

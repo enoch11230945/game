@@ -1,0 +1,21 @@
+[gd_resource type="EnemyData" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/data/EnemyData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+enemy_name = "🍄 Spore Mother"
+description = "Spawns smaller enemies when damaged"
+base_health = 80
+base_damage = 12
+base_speed = 60.0
+base_xp_value = 20
+behavior_type = "SPAWNER"
+sprite_texture_path = "res://assets/sprites/enemies/spore_mother.png"
+scale_factor = 1.2
+spawn_weight = 8
+special_abilities = ["spawn_on_damage", "spawn_on_death"]
+damage_resistance = {}
+status_immunities = []
+spawn_enemy_type = "swarmer_enemy"
+spawn_count = 3

@@ -1,0 +1,14 @@
+[gd_resource type="WeaponData" format=3]
+
+[resource]
+weapon_name = "Garlic Aura"
+description = "Creates a protective aura around the player"
+icon = null
+base_damage = 12.0
+base_cooldown = 0.5
+base_range = 80.0
+weapon_type = "aura"
+projectile_count = 1
+projectile_speed = 0.0
+evolution_weapon = null
+evolution_item = null

@@ -1,0 +1,23 @@
+[gd_resource type="WeaponData" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/data/WeaponData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+weapon_name = "🍕 Pizza Cutter"
+description = "Boomerang weapon that returns and hits twice"
+weapon_type = "BOOMERANG"
+base_damage = 35
+base_cooldown = 2.5
+base_range = 200.0
+projectile_speed = 180.0
+projectile_count = 1
+base_knockback = 8.0
+base_crit_chance = 0.12
+sprite_texture_path = "res://assets/sprites/weapons/pizza_cutter.png"
+projectile_texture_path = "res://assets/sprites/weapons/spinning_cutter.png"
+sound_effect_path = "res://assets/audio/weapons/pizza_cutter.ogg"
+special_effects = ["boomerang_return", "spin_damage", "double_hit"]
+damage_type = "PHYSICAL"
+evolution_requirements = ["max_level", "boomerang_mastery"]
+evolved_weapon = "mega_pizza_weapon"

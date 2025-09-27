@@ -1,0 +1,21 @@
+[gd_resource type="EnemyData" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/data/EnemyData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+enemy_name = "👻 Ghost Garlic"
+description = "Phases through walls, appears randomly"
+base_health = 35
+base_damage = 20
+base_speed = 120.0
+base_xp_value = 10
+behavior_type = "GHOST"
+sprite_texture_path = "res://assets/sprites/enemies/ghost_garlic.png"
+scale_factor = 0.9
+spawn_weight = 10
+special_abilities = ["phase_through_walls", "teleport_attack", "invisibility"]
+damage_resistance = {"physical": 0.3}
+status_immunities = ["slow"]
+teleport_range = 200.0
+invisibility_duration = 2.0

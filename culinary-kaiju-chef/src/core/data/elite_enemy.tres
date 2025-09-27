@@ -1,0 +1,21 @@
+[gd_resource type="EnemyData" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/data/EnemyData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+enemy_name = "⭐ Elite Eggplant"
+description = "Rare, powerful, multiple abilities"
+base_health = 200
+base_damage = 30
+base_speed = 90.0
+base_xp_value = 50
+behavior_type = "ELITE"
+sprite_texture_path = "res://assets/sprites/enemies/elite_eggplant.png"
+scale_factor = 1.5
+spawn_weight = 2
+special_abilities = ["multiple_attacks", "shield_regeneration", "area_damage"]
+damage_resistance = {"physical": 0.2, "elemental": 0.3}
+status_immunities = ["stun", "slow"]
+shield_amount = 50
+shield_regen_rate = 5

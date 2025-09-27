@@ -38,17 +38,9 @@ var xp_gems: Array[Area2D] = []
 # Timers
 var enemy_spawn_timer: float = 0.0
 
-# Upgrade system
-var available_upgrades = [
-    {"name": "🔪 Cleaver Mastery", "desc": "More cleavers!", "type": "weapon_count", "weapon": "cleaver"},
-    {"name": "⚔️ Razor Edge", "desc": "More damage!", "type": "weapon_damage", "weapon": "cleaver"},
-    {"name": "⚡ Lightning Hands", "desc": "Faster attacks!", "type": "weapon_speed", "weapon": "cleaver"},
-    {"name": "💪 Kaiju Vigor", "desc": "Faster movement!", "type": "movement_speed", "value": 40},
-    {"name": "🐉 Giant Growth", "desc": "Bigger size!", "type": "size", "value": 1.25},
-    {"name": "🌟 Spice Magnet", "desc": "Larger pickup!", "type": "pickup_radius", "value": 1.5},
-    {"name": "🌪️ Whisk Tornado", "desc": "UNLOCK: Area weapon!", "type": "unlock_weapon", "weapon": "whisk"},
-    {"name": "💚 Chef's Resilience", "desc": "More health!", "type": "max_health", "value": 25}
-]
+# Upgrade system - Now using massive 50-upgrade database
+var all_upgrades: Array[UpgradeData] = []
+var available_upgrades: Array[UpgradeData] = []
 
 var current_upgrade_choices: Array[Dictionary] = []
 var is_upgrading: bool = false
@@ -187,15 +179,21 @@ func connect_event_bus_signals():
 
 func _process(delta):
     """Main game loop - clean and efficient"""
-    if is_upgrading:
+    if is_upgrading or Game.is_paused or Game.is_game_over:
         return
     
     game_time += delta
+    # Update core Game state
+    Game.game_time = game_time
+    
     handle_movement(delta)
     handle_enemy_spawning(delta)
-    handle_weapon_systems(delta)
+    handle_weapon_systems(delta) 
     update_all_entities(delta)
     cleanup_invalid_objects()
+    
+    # Update HUD
+    update_hud_display()
 
 func handle_movement(delta: float):
     """Data-driven movement system"""
@@ -534,6 +532,9 @@ func _on_aoe_hit_enemy(aoe: Area2D, enemy: Area2D):
 
 func damage_enemy(enemy: Area2D, damage: int):
     """Damage enemy using data-driven approach"""
+    # 播放击中音效
+    AudioManager.play_sfx("hit")
+    
     var current_health = enemy.get_meta("current_health", 50) - damage
     enemy.set_meta("current_health", current_health)
     
@@ -582,6 +583,9 @@ func spawn_xp_gem(position: Vector2, value: int):
 func _on_xp_collected(gem: Area2D):
     """Handle XP collection via EventBus"""
     if gem in xp_gems:
+        # 播放拾取音效
+        AudioManager.play_sfx("pickup")
+        
         var xp_value = gem.get_meta("xp_value", 12)
         appetite += xp_value
         
@@ -596,6 +600,9 @@ func _on_xp_collected(gem: Area2D):
 
 func level_up():
     """Level up using EventBus signals"""
+    # 播放升级音效
+    AudioManager.play_sfx("victory")
+    
     monster_level += 1
     appetite = 0
     appetite_required = int(appetite_required * 1.45)
@@ -620,6 +627,9 @@ func show_upgrade_screen():
 
 func apply_upgrade(upgrade: Dictionary):
     """Apply upgrade using data-driven approach"""
+    # 播放升级音效
+    AudioManager.play_sfx("upgrade")
+    
     match upgrade.type:
         "weapon_count":
             for weapon_data in active_weapons:
@@ -654,6 +664,9 @@ func apply_upgrade(upgrade: Dictionary):
 
 func take_damage(damage: int):
     """Take damage and emit signals"""
+    # 播放受伤音效
+    AudioManager.play_sfx("defeat")
+    
     chef_health = max(0, chef_health - damage)
     
     monster_chef.modulate = Color.RED

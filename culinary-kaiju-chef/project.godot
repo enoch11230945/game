@@ -18,13 +18,14 @@ config/features=PackedStringArray("4.5")
 [autoload]
 
 EventBus="*res://src/autoload/EventBus.gd"
-
-EventBus="*res://src/autoload/EventBus.gd"
 Game="*res://src/autoload/Game.gd"
 ObjectPool="*res://src/autoload/ObjectPool.gd"
 PlayerData="*res://src/autoload/PlayerData.gd"
 DataManager="*res://src/autoload/DataManager.gd"
 UpgradeManager="*res://src/autoload/UpgradeManager.gd"
+AdManager="*res://src/autoload/AdManager.gd"
+AudioManager="*res://src/autoload/AudioManager.gd"
+MonetizationManager="*res://src/autoload/monetization_manager.gd"
 
 [input]
 
@@ -61,3 +62,4 @@ move_up={
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
+ScreenShake=\"*res://src/autoload/ScreenShake.gd\"

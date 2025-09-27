@@ -1,5 +1,5 @@
 help me use https://github.com/3ddelano/gdai-mcp-plugin-godot , https://github.com/ee0pdt/Godot-MCP and https://github.com/Coding-Solo/godot-mcp for your mcp , and you use those │
- │    mcp keep going make the game until perfect,watch all my file , follow "C:\Users\ENOCHCHAN\Desktop\game\Godot 4.5 游戏系統架構與檔案藍圖.txt"
+ │    mcp keep going make the game until perfect,watch all my file ,you can copy any file you want from C:\Users\fello\Desktop\game\culinary-kaiju-chef\_source_templates, follow "C:\Users\ENOCHCHAN\Desktop\game\Godot 4.5 游戏系統架構與檔案藍圖.txt"
 "C:\Users\ENOCHCHAN\Desktop\game\Godot 4.5 游戏todo.txt"
 "C:\Users\ENOCHCHAN\Desktop\game\Godot 4.5 游戏开发 PRD 与架构.txt" create the game, and "C:\Users\ENOCHCHAN\Desktop\game\godot-docs" you can find the newest 4.5 code , learn new 4.5coding there , you can use godot mcp,## 角色定义
 
