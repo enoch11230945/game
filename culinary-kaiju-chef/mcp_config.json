@@ -1,0 +1,30 @@
+{
+  "mcpServers": {
+    "gdai-plugin": {
+      "comment": "Most mature solution - can create scenes, nodes, scripts, debug errors",
+      "command": "node",
+      "args": ["C:/Users/fello/Desktop/game/culinary-kaiju-chef/_mcp_tools/gdai-mcp-plugin-godot/project/server.js"],
+      "env": {
+        "GODOT_PROJECT_PATH": "C:/Users/fello/Desktop/game/culinary-kaiju-chef",
+        "DEBUG": "true"
+      }
+    },
+    "godot-control": {
+      "comment": "Project running and debugging - perfect for testing our architecture",
+      "command": "node", 
+      "args": ["C:/Users/fello/Desktop/game/culinary-kaiju-chef/_mcp_tools/coding-solo-godot-mcp/build/index.js"],
+      "env": {
+        "GODOT_PATH": "C:/Users/fello/Desktop/game/Godot_v4.5-stable_win64.exe/Godot_v4.5-stable_win64.exe",
+        "DEBUG": "true"
+      }
+    },
+    "godot-editor": {
+      "comment": "Two-way editor communication for advanced manipulation",
+      "command": "node",
+      "args": ["C:/Users/fello/Desktop/game/culinary-kaiju-chef/_mcp_tools/ee0pdt-godot-mcp/server/dist/index.js"],
+      "env": {
+        "MCP_TRANSPORT": "stdio"
+      }
+    }
+  }
+}

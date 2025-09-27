@@ -28,6 +28,8 @@ func _format_weapon_projectiles() -> String:
 	var arr: Array[String] = []
 	for c in Game.player.get_children():
 		if c is BaseWeapon:
+			arr.append("%s=%d" % [c.weapon_data.name, c.weapon_data.projectile_count])
+	return "Shots/Weapon: " + ", ".join(arr)
 
 func _format_dps() -> String:
 	if not Game.player or Game.time_elapsed <= 0.1:
@@ -38,6 +40,3 @@ func _format_dps() -> String:
 			var dps = int(float(c.total_damage_dealt) / Game.time_elapsed)
 			parts.append("%s:%d" % [c.weapon_data.name, dps])
 	return "DPS: " + ", ".join(parts)
-
-			arr.append("%s=%d" % [c.weapon_data.name, c.weapon_data.projectile_count])
-	return "Shots/Weapon: " + ", ".join(arr)

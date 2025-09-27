@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Culinary Kaiju Chef"
 config/version="1.0.0"
-run/main_scene="res://src/main/main.tscn"
+run/main_scene="res://ENHANCED_COMPLETE.tscn"
 config/features=PackedStringArray("4.5")
 
 [autoload]

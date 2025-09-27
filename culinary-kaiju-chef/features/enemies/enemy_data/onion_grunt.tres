@@ -1,6 +1,16 @@
-[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="EnemyData" load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://src/core/data/EnemyData.gd" id="1_pqr"]
+[ext_resource type="Script" path="res://src/core/data/EnemyData.gd" id="1"]
+[ext_resource type="PackedScene" path="res://features/enemies/base_enemy/BaseEnemy.tscn" id="2"]
 
 [resource]
-script = ExtResource("1_pqr")
+script = ExtResource("1")
+name = "Onion Grunt"
+health = 30
+speed = 60.0
+damage = 5
+xp_reward = 5
+scene = ExtResource("2")
+sprite_modulate = Color(1, 0.8, 0.8, 1)
+separation_strength = 0.5
+separation_radius = 40.0

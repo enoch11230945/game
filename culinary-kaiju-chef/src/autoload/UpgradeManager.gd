@@ -34,6 +34,14 @@ func _apply_random_upgrade():
 		0:
 			up.id = "proj+"
 			up.add_projectiles = 1
+		1:
+			up.id = "dmg+"
+			up.damage_multiplier = 1.15
+		2:
+			up.id = "cd-"
+			up.cooldown_multiplier = 0.9
+	EventBus.upgrade_selected.emit(up)
+	upgrade_applied.emit(up)
 
 func present_upgrade_ui():
 	# 生成三個候選升級
@@ -70,12 +78,3 @@ func present_upgrade_ui():
 
 func _on_ui_upgrade_done():
 	upgrade_applied.emit(null)
-
-		1:
-			up.id = "dmg+"
-			up.damage_multiplier = 1.15
-		2:
-			up.id = "cd-"
-			up.cooldown_multiplier = 0.9
-	EventBus.upgrade_selected.emit(up)
-	upgrade_applied.emit(up)

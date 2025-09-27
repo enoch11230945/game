@@ -134,6 +134,7 @@ func die() -> void:
     
     # Notify game systems
     EventBus.enemy_killed.emit(self, data.xp_reward if data else 5)
+    Game.score += (data.xp_reward if data else 5)
     
     # Return to object pool instead of queue_free()
     ObjectPool.reclaim(self)

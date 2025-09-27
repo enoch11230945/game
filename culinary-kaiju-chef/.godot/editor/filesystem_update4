@@ -1,6 +1,0 @@
-res://features/enemies/base_enemy/base_enemy.gd
-res://features/items/xp_gem/xp_gem.gd
-res://src/autoload/Game.gd
-res://src/core/spawner/EnemySpawner.gd
-res://src/core/spawner/spawn_wave.gd
-res://src/ui/components/upgrade_card.gd

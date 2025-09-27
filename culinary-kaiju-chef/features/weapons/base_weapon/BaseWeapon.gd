@@ -101,11 +101,6 @@ func apply_upgrade(upgrade: UpgradeData) -> void:
     if upgrade.cooldown_multiplier != 1.0:
         weapon_data.cooldown *= upgrade.cooldown_multiplier
 
-func _ready() -> void:
-    # 監聽升級事件
-    if EventBus.has_signal("upgrade_selected"):
-        EventBus.upgrade_selected.connect(apply_upgrade)
-
 func get_weapon_stats() -> Dictionary:
     if not weapon_data:
         return {}

@@ -42,10 +42,15 @@ func level_up() -> void:
     unpause_game()
 
 func pause_game() -> void:
+    # 不重複操作
+    if is_paused:
+        return
     is_paused = true
     get_tree().paused = true
 
 func unpause_game() -> void:
+    if not is_paused:
+        return
     is_paused = false
     get_tree().paused = false
 
@@ -77,6 +82,25 @@ func get_game_stats() -> Dictionary:
         "enemies_killed": total_enemies_killed,
         "current_xp": current_xp,
         "required_xp": required_xp
+    }
+
+func finalize_run_and_store():
+    if PlayerData:
+        PlayerData.last_run = build_run_summary()
+        PlayerData.update_game_stats(score, time_elapsed, total_enemies_killed)
+
+func build_run_summary() -> Dictionary:
+    var dps_snapshot: Dictionary = {}
+    if player:
+        for c in player.get_children():
+            if c is BaseWeapon and time_elapsed > 0.2:
+                dps_snapshot[c.weapon_data.name] = int(float(c.total_damage_dealt) / time_elapsed)
+    return {
+        "score": score,
+        "level": level,
+        "time": time_elapsed,
+        "kills": total_enemies_killed,
+        "dps_snapshot": dps_snapshot
     }
 
 

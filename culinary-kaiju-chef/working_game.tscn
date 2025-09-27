@@ -1,0 +1,81 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://working_game.gd" id="1"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_player"]
+radius = 20.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_collector"]
+radius = 64.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_enemy"]
+radius = 15.0
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 1
+background_color = Color(0.1, 0.1, 0.15, 1)
+
+[node name="WorkingGame" type="Node2D"]
+script = ExtResource("1")
+
+[node name="Player" type="CharacterBody2D" parent="." groups=["player"]]
+position = Vector2(400, 300)
+collision_layer = 2
+collision_mask = 1
+
+[node name="PlayerSprite" type="ColorRect" parent="Player"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+color = Color(0, 1, 0, 1)
+
+[node name="PlayerCollision" type="CollisionShape2D" parent="Player"]
+shape = SubResource("CircleShape2D_player")
+
+[node name="XPCollector" type="Area2D" parent="Player"]
+collision_layer = 0
+collision_mask = 32
+
+[node name="CollectorShape" type="CollisionShape2D" parent="Player/XPCollector"]
+shape = SubResource("CircleShape2D_collector")
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+
+[node name="EnemyTemplate" type="Area2D" parent="."]
+position = Vector2(600, 300)
+collision_layer = 4
+collision_mask = 8
+
+[node name="EnemySprite" type="ColorRect" parent="EnemyTemplate"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -15.0
+offset_top = -15.0
+offset_right = 15.0
+offset_bottom = 15.0
+color = Color(1, 0, 0, 1)
+
+[node name="EnemyCollision" type="CollisionShape2D" parent="EnemyTemplate"]
+shape = SubResource("CircleShape2D_enemy")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="StatusLabel" type="Label" parent="UI"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 400.0
+offset_bottom = 100.0
+text = "Use WASD to move
+Game Status: Loading..."
