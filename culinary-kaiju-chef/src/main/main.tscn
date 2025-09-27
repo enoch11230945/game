@@ -1,7 +1,24 @@
-[gd_scene format=3]
+[gd_scene load_steps=5 format=3]
 
-[node name="root" type="Node"]
+[ext_resource type="Script" path="res://src/main/Main.gd" id="1"]
+[ext_resource type="PackedScene" path="res://features/player/Player.tscn" id="2"]
+[ext_resource type="Script" path="res://src/core/spawner/EnemySpawner.gd" id="3"]
+[ext_resource type="Resource" path="res://src/core/spawner/wave_1.tres" id="4"]
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 1
+background_color = Color(0.1, 0.1, 0.15, 1)
+
+[node name="Main" type="Node"]
+script = ExtResource("1")
+player_scene = ExtResource("2")
+
+[node name="Projectiles" type="Node2D" parent="." groups=["projectiles_layer"]]
+
+[node name="Entities" type="Node2D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1")
 
 [node name="EnemySpawner" type="Node" parent="."]
-
-[node name="SpawnTimer" type="Timer" parent="EnemySpawner"]
+script = ExtResource("3")
