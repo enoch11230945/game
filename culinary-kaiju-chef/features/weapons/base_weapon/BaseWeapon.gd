@@ -6,31 +6,23 @@ class_name BaseWeapon
 
 var player: Node2D
 var projectile_scene: PackedScene
-var attack_timer: Timer
+var _cooldown_accumulator: float = 0.0
 
 func _ready() -> void:
-    # Load projectile scene dynamically
     projectile_scene = preload("res://features/weapons/base_weapon/BaseProjectile.tscn")
-    
-    # Create attack timer
-    attack_timer = Timer.new()
-    add_child(attack_timer)
-    attack_timer.timeout.connect(_on_attack_timer_timeout)
-    attack_timer.one_shot = false
 
 func initialize(player_ref: Node2D, weapon_data_ref: Resource) -> void:
     player = player_ref
     weapon_data = weapon_data_ref
-    
-    if weapon_data and attack_timer:
-        attack_timer.wait_time = weapon_data.cooldown
-        attack_timer.start()
+    _cooldown_accumulator = 0.0
 
-func _on_attack_timer_timeout() -> void:
-    if not player or not weapon_data or not projectile_scene:
+func _process(delta: float) -> void:
+    if not player or not weapon_data:
         return
-    
-    attack()
+    _cooldown_accumulator += delta
+    while _cooldown_accumulator >= weapon_data.cooldown:
+        _cooldown_accumulator -= weapon_data.cooldown
+        attack()
 
 func attack() -> void:
     if not player or not weapon_data:
