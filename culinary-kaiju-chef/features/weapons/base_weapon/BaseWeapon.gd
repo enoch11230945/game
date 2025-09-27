@@ -7,6 +7,8 @@ class_name BaseWeapon
 var player: Node2D
 var projectile_scene: PackedScene
 var _cooldown_accumulator: float = 0.0
+var fired_count: int = 0
+var total_damage_dealt: int = 0
 
 func _ready() -> void:
     projectile_scene = preload("res://features/weapons/base_weapon/BaseProjectile.tscn")
@@ -53,6 +55,7 @@ func attack() -> void:
     # Fire projectiles in all calculated directions
     for direction in directions:
         _fire_projectile(direction)
+    fired_count += directions.size()
 
 func _get_best_attack_direction() -> Vector2:
     # Find the nearest enemy
@@ -92,7 +95,7 @@ func apply_upgrade(upgrade: UpgradeData) -> void:
         return
     # 修改 Resource 數據（設計上若需可 clone，一般武器升級全域共享也可）
     if upgrade.add_projectiles != 0:
-        weapon_data.projectile_count += upgrade.add_projectiles
+        weapon_data.projectile_count = min(weapon_data.projectile_count + upgrade.add_projectiles, 30) # 安全上限
     if upgrade.damage_multiplier != 1.0:
         weapon_data.damage = int(weapon_data.damage * upgrade.damage_multiplier)
     if upgrade.cooldown_multiplier != 1.0:

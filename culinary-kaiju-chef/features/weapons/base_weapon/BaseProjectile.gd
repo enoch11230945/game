@@ -50,6 +50,11 @@ func _on_area_entered(area: Area2D) -> void:
     # Check if the area is an enemy
     if area.has_method("take_damage"):
         area.take_damage(damage)
+        # 回填武器傷害統計（若需要 HUD 顯示 DPS）
+        if get_parent() and get_parent().get_parent():
+            var maybe_weapon = get_parent().get_parent()
+            if maybe_weapon is BaseWeapon:
+                maybe_weapon.total_damage_dealt += damage
         enemies_hit += 1
         
         # Check if we should pierce or be destroyed

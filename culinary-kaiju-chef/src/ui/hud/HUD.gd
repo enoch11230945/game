@@ -20,7 +20,7 @@ func _update_stats():
 	level_label.text = "Level: %d" % gs.level
 	xp_label.text = "XP: %d/%d" % [gs.current_xp, gs.required_xp]
 	kills_label.text = "Kills: %d" % gs.enemies_killed
-	proj_label.text = _format_weapon_projectiles()
+	proj_label.text = _format_weapon_projectiles() + " | " + _format_dps()
 
 func _format_weapon_projectiles() -> String:
 	if not Game.player:
@@ -28,5 +28,16 @@ func _format_weapon_projectiles() -> String:
 	var arr: Array[String] = []
 	for c in Game.player.get_children():
 		if c is BaseWeapon:
+
+func _format_dps() -> String:
+	if not Game.player or Game.time_elapsed <= 0.1:
+		return "DPS: -"
+	var parts: Array[String] = []
+	for c in Game.player.get_children():
+		if c is BaseWeapon:
+			var dps = int(float(c.total_damage_dealt) / Game.time_elapsed)
+			parts.append("%s:%d" % [c.weapon_data.name, dps])
+	return "DPS: " + ", ".join(parts)
+
 			arr.append("%s=%d" % [c.weapon_data.name, c.weapon_data.projectile_count])
 	return "Shots/Weapon: " + ", ".join(arr)
