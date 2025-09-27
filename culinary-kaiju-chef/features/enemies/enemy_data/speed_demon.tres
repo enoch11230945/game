@@ -1,11 +1,16 @@
-[gd_resource type="Resource" load_steps=1 format=3 uid="uid://fast_enemy_data"]
+[gd_resource type="Resource" script_class="EnemyData" load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://src/core/data/EnemyData.gd" id="1_enemy_data"]
+[ext_resource type="Script" path="res://src/core/data/EnemyData.gd" id="1"]
+[ext_resource type="PackedScene" path="res://features/enemies/base_enemy/BaseEnemy.tscn" id="2"]
 
 [resource]
-script = ExtResource("1_enemy_data")
-health = 75
-speed = 180.0
-damage = 15
-xp_value = 10
-scene_path = "res://features/enemies/base_enemy/base_enemy.tscn"
+script = ExtResource("1")
+name = "Speed Demon"
+health = 15
+speed = 140.0
+damage = 5
+xp_reward = 8
+scene = ExtResource("2")
+sprite_modulate = Color(0.8, 1, 0.8, 1)
+separation_strength = 0.4
+separation_radius = 36.0
