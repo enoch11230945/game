@@ -81,6 +81,19 @@ func _fire_projectile(direction: Vector2) -> void:
         projectile.initialize(player.global_position + spawn_offset, direction, weapon_data)
         EventBus.weapon_fired.emit(self, projectile)
 
+func apply_upgrade(upgrade: UpgradeData) -> void:
+    if not weapon_data or not upgrade:
+        return
+    if upgrade.target_weapon_name != weapon_data.name:
+        return
+    # 修改 Resource 數據（設計上若需可 clone，一般武器升級全域共享也可）
+    if upgrade.add_projectiles != 0:
+        weapon_data.projectile_count += upgrade.add_projectiles
+    if upgrade.damage_multiplier != 1.0:
+        weapon_data.damage = int(weapon_data.damage * upgrade.damage_multiplier)
+    if upgrade.cooldown_multiplier != 1.0:
+        weapon_data.cooldown *= upgrade.cooldown_multiplier
+
 func get_weapon_stats() -> Dictionary:
     if not weapon_data:
         return {}
