@@ -1,53 +1,34 @@
-# UpgradeManager.gd - Data-driven upgrade system (Linus-approved)
-# "Strategy pattern eliminates the need for massive switch statements" - Linus
+# UpgradeManager.gd - Data-driven upgrade system (Linus approved)
 extends Node
 
 # === UPGRADE DATABASE ===
-var all_upgrades: Array[UpgradeData] = []
-var weapon_upgrades: Dictionary = {}
-var passive_upgrades: Array[UpgradeData] = []
+var all_weapons: Array[WeaponData] = []
+var all_items: Array[ItemData] = []
+var current_upgrades: Dictionary = {}  # Applied upgrades with stack counts
 
-# === CURRENT RUN STATE ===
-var applied_upgrades: Array[UpgradeData] = []
-var upgrade_counts: Dictionary = {}
-var weapon_levels: Dictionary = {}
+# === PLAYER INVENTORY ===
+var equipped_weapons: Array[WeaponData] = []
+var equipped_items: Array[ItemData] = []
 
-# === RARITY WEIGHTS ===
-var rarity_weights = {
-    "COMMON": 70,
-    "RARE": 20,
-    "EPIC": 8,
-    "LEGENDARY": 2
-}
-
-func _ready():
-    print("⚡ UpgradeManager initialized - Data-driven upgrades ready")
-    load_all_upgrades()
-    EventBus.player_level_up.connect(_on_player_level_up)
-
-func load_all_upgrades():
-    """Load all upgrade resources from disk"""
-    all_upgrades.clear()
-    weapon_upgrades.clear()
-    passive_upgrades.clear()
+func _ready() -> void:
+    print("🔧 UpgradeManager initialized - Data-driven upgrades")
+    _load_upgrade_database()
     
-    # Load weapon upgrades
-    var weapon_files = [
-        "cleaver_upgrade_damage", "cleaver_upgrade_speed", "cleaver_upgrade_count",
-        "whisk_upgrade_damage", "whisk_upgrade_range", "whisk_upgrade_duration",
-        "garlic_upgrade_damage", "garlic_upgrade_radius", "garlic_upgrade_speed",
-        "holy_water_upgrade_damage", "holy_water_upgrade_size", "holy_water_upgrade_duration",
-        "spice_blast_upgrade_damage", "spice_blast_upgrade_explosions", "spice_blast_upgrade_radius",
-        "fork_barrage_upgrade_damage", "fork_barrage_upgrade_speed", "fork_barrage_upgrade_count",
-        "pizza_cutter_upgrade_damage", "pizza_cutter_upgrade_return", "pizza_cutter_upgrade_size",
-        "lightning_spoon_upgrade_damage", "lightning_spoon_upgrade_chain", "lightning_spoon_upgrade_stun",
-        "ice_cream_upgrade_damage", "ice_cream_upgrade_freeze", "ice_cream_upgrade_slow",
-        "bubble_tea_upgrade_damage", "bubble_tea_upgrade_bounces", "bubble_tea_upgrade_size",
-        "spatula_shield_upgrade_damage", "spatula_shield_upgrade_reflect", "spatula_shield_upgrade_duration",
-        "cookbook_upgrade_damage", "cookbook_upgrade_summons", "cookbook_upgrade_duration"
-    ]
+    # Connect to events
+    EventBus.upgrade_selected.connect(_on_upgrade_selected)
+
+func _load_upgrade_database() -> void:
+    """Load all available weapons and items"""
+    # Load weapons
+    all_weapons.append(load("res://features/weapons/weapon_data/throwing_knife.tres"))
+    all_weapons.append(load("res://features/weapons/weapon_data/whisk_tornado.tres"))
+    all_weapons.append(load("res://features/weapons/weapon_data/spatula_shield.tres"))
     
-    # Load passive upgrades
+    # Load items
+    all_items.append(load("res://features/items/item_data/garlic_aura.tres"))
+    all_items.append(load("res://features/items/item_data/chef_boots.tres"))
+    
+    print("✅ Loaded %d weapons, %d items" % [all_weapons.size(), all_items.size()])
     var passive_files = [
         "damage_boost_1", "damage_boost_2", "damage_boost_3",
         "health_boost_1", "health_boost_2", "health_boost_3",

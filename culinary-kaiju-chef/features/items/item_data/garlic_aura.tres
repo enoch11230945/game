@@ -1,0 +1,32 @@
+[gd_resource type="ItemData" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/data/ItemData.gd" id="1_garlic"]
+
+[resource]
+script = ExtResource("1_garlic")
+item_name = "Garlic Aura"
+description = "Increases pickup range and provides minor damage boost"
+item_type = "passive"
+rarity = "common"
+unlock_level = 1
+max_stack = 5
+health_bonus = 0
+speed_bonus = 0.0
+damage_multiplier = 1.1
+attack_speed_multiplier = 1.0
+range_multiplier = 1.0
+penetration_bonus = 0
+projectile_count_bonus = 0
+pickup_range_multiplier = 1.3
+xp_multiplier = 1.0
+cooldown_reduction = 0.0
+crit_chance = 0.0
+crit_multiplier = 1.5
+item_color = Color(0.9, 0.9, 0.7, 1)
+particle_effect = "garlic_sparkle"
+health_per_stack = 0
+speed_per_stack = 0.0
+damage_per_stack = 0.05
+special_effect = "repel"
+effect_chance = 0.1
+effect_value = 20.0

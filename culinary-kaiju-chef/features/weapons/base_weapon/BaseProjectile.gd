@@ -48,6 +48,50 @@ func _physics_process(delta: float) -> void:
 
 func _on_area_entered(area: Area2D) -> void:
     # Check if the area is an enemy
+    if area.is_in_group("enemies"):
+        var enemy = area as BaseEnemy
+        if enemy and enemy.has_method("take_damage"):
+            enemy.take_damage(damage)
+            enemies_hit += 1
+            
+            # Emit hit signal for tracking
+            if has_signal("enemy_hit"):
+                enemy_hit.emit(enemy, damage)
+            
+            # Emit global event
+            EventBus.projectile_hit.emit(self, enemy, damage)
+            
+            # Check if we should be destroyed after hitting
+            if enemies_hit >= piercing:
+                _destroy_projectile()
+
+func _on_lifetime_timeout() -> void:
+    """Clean up projectile when lifetime expires"""
+    _destroy_projectile()
+
+func _destroy_projectile() -> void:
+    """Return projectile to pool instead of queue_free - Linus approved"""
+    ObjectPool.return_projectile(self)
+
+func reset() -> void:
+    """Reset projectile state for object pool reuse"""
+    enemies_hit = 0
+    damage = 10
+    speed = 300.0
+    direction = Vector2.RIGHT
+    piercing = 0
+    
+    # Reset visual state
+    if sprite:
+        sprite.modulate = Color.WHITE
+        sprite.scale = Vector2.ONE
+    
+    # Stop timer
+    if lifetime_timer:
+        lifetime_timer.stop()
+
+# Signal for damage tracking
+signal enemy_hit(enemy: Node, damage: int)
     if area.has_method("take_damage"):
         area.take_damage(damage)
         # 回填武器傷害統計（若需要 HUD 顯示 DPS）

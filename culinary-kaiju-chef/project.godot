@@ -24,8 +24,16 @@ PlayerData="*res://src/autoload/PlayerData.gd"
 DataManager="*res://src/autoload/DataManager.gd"
 UpgradeManager="*res://src/autoload/UpgradeManager.gd"
 AdManager="*res://src/autoload/AdManager.gd"
-AudioManager="*res://src/autoload/AudioManager.gd"
+AudioManager="*res://src/audio/AudioManager.tscn"
 MonetizationManager="*res://src/autoload/monetization_manager.gd"
+SceneLoader="*res://src/autoload/SceneLoader.gd"
+ScreenShake="*res://src/autoload/ScreenShake.gd"
+AdSystem="*res://src/monetization/AdSystem.gd"
+IAPSystem="*res://src/monetization/IAPSystem.gd"
+AnalyticsManager="*res://src/analytics/AnalyticsManager.gd"
+PlatformManager="*res://src/platform/PlatformManager.gd"
+GameManager="*res://src/managers/GameManager.gd"
+SystemManager="*res://src/managers/SystemManager.gd"
 
 [input]
 

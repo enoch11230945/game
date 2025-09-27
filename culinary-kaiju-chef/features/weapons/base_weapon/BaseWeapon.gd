@@ -48,6 +48,68 @@ func attack() -> void:
         var start_angle = -spread_rad / 2
         
         for i in range(weapon_data.projectile_count):
+            var angle = start_angle + (i * angle_step)
+            var rotated_direction = base_direction.rotated(angle)
+            directions.append(rotated_direction)
+    
+    # Fire all projectiles
+    for direction in directions:
+        _fire_projectile(direction)
+    
+    fired_count += directions.size()
+    EventBus.weapon_fired.emit(weapon_data.weapon_name, player.global_position, Vector2.ZERO)
+
+func _fire_projectile(direction: Vector2) -> void:
+    """Fire a single projectile using ObjectPool - Linus approved"""
+    var projectile = ObjectPool.get_projectile(projectile_scene)
+    if not projectile:
+        print("❌ Failed to get projectile from pool")
+        return
+    
+    # Add to scene tree
+    get_tree().get_root().add_child(projectile)
+    
+    # Initialize projectile with weapon data
+    if projectile.has_method("initialize"):
+        projectile.initialize(player.global_position, direction, weapon_data)
+    
+    # Connect hit signal for damage tracking
+    if projectile.has_signal("enemy_hit"):
+        projectile.enemy_hit.connect(_on_projectile_hit)
+
+func _get_best_attack_direction() -> Vector2:
+    """Find the best direction to attack (towards nearest enemy)"""
+    var enemies = get_tree().get_nodes_in_group("enemies")
+    if enemies.is_empty():
+        return Vector2.RIGHT  # Default direction if no enemies
+    
+    var nearest_enemy = null
+    var nearest_distance = INF
+    
+    for enemy in enemies:
+        if not is_instance_valid(enemy):
+            continue
+        var distance = player.global_position.distance_to(enemy.global_position)
+        if distance < nearest_distance:
+            nearest_distance = distance
+            nearest_enemy = enemy
+    
+    if nearest_enemy:
+        return (nearest_enemy.global_position - player.global_position).normalized()
+    else:
+        return Vector2.RIGHT
+
+func _on_projectile_hit(enemy: Node, damage: int):
+    """Track damage dealt by our projectiles"""
+    total_damage_dealt += damage
+
+func apply_upgrade(upgrade_data: Resource):
+    """Apply upgrade to this weapon - data driven"""
+    if not upgrade_data or not weapon_data:
+        return
+    
+    # This would be implemented based on your upgrade system
+    print("Weapon %s applying upgrade: %s" % [weapon_data.weapon_name, upgrade_data])
             var angle = start_angle + (angle_step * i)
             var direction = base_direction.rotated(angle)
             directions.append(direction)

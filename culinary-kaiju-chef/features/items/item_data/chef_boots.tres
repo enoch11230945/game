@@ -1,0 +1,32 @@
+[gd_resource type="ItemData" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/data/ItemData.gd" id="1_boots"]
+
+[resource]
+script = ExtResource("1_boots")
+item_name = "Chef's Boots"
+description = "Non-slip kitchen boots that increase movement speed"
+item_type = "passive"
+rarity = "common"
+unlock_level = 1
+max_stack = 3
+health_bonus = 0
+speed_bonus = 30.0
+damage_multiplier = 1.0
+attack_speed_multiplier = 1.0
+range_multiplier = 1.0
+penetration_bonus = 0
+projectile_count_bonus = 0
+pickup_range_multiplier = 1.0
+xp_multiplier = 1.0
+cooldown_reduction = 0.0
+crit_chance = 0.0
+crit_multiplier = 1.5
+item_color = Color(0.4, 0.3, 0.2, 1)
+particle_effect = ""
+health_per_stack = 0
+speed_per_stack = 15.0
+damage_per_stack = 0.0
+special_effect = ""
+effect_chance = 0.0
+effect_value = 0.0

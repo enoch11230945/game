@@ -1,0 +1,48 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/ui/components/UpgradeCard.gd" id="1_card"]
+
+[node name="UpgradeCard" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 200.0
+offset_bottom = 300.0
+script = ExtResource("1_card")
+
+[node name="CardButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_font_sizes/font_size = 14
+
+[node name="VBox" type="VBoxContainer" parent="CardButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+
+[node name="IconRect" type="TextureRect" parent="CardButton/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+custom_minimum_size = Vector2(64, 64)
+stretch_mode = 5
+
+[node name="NameLabel" type="Label" parent="CardButton/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Upgrade Name"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="DescriptionLabel" type="Label" parent="CardButton/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Upgrade description goes here."
+horizontal_alignment = 1
+autowrap_mode = 3
