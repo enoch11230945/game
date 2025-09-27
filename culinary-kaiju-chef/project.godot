@@ -21,6 +21,8 @@ EventBus="*res://src/autoload/EventBus.gd"
 Game="*res://src/autoload/Game.gd"
 ObjectPool="*res://src/autoload/ObjectPool.gd"
 PlayerData="*res://src/autoload/PlayerData.gd"
+DataManager="*res://src/autoload/DataManager.gd"
+UpgradeManager="*res://src/autoload/UpgradeManager.gd"
 
 [input]
 

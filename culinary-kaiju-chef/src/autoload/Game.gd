@@ -36,7 +36,9 @@ func level_up() -> void:
     required_xp = int(required_xp * 1.5)
     pause_game()
     EventBus.player_leveled_up.emit(level)
-    # 正式升級流程交由 UpgradeManager 透過 upgrade_selected 事件觸發，不在這裡直接操作武器
+    # 觸發升級 UI
+    if UpgradeManager and UpgradeManager.has_method("present_upgrade_ui"):
+        UpgradeManager.present_upgrade_ui()
     unpause_game()
 
 func pause_game() -> void:
