@@ -36,7 +36,7 @@ func level_up() -> void:
     required_xp = int(required_xp * 1.5)
     pause_game()
     EventBus.player_leveled_up.emit(level)
-    _auto_apply_test_upgrade()
+    # 正式升級流程交由 UpgradeManager 透過 upgrade_selected 事件觸發，不在這裡直接操作武器
     unpause_game()
 
 func pause_game() -> void:
@@ -77,13 +77,4 @@ func get_game_stats() -> Dictionary:
         "required_xp": required_xp
     }
 
-func _auto_apply_test_upgrade() -> void:
-    if not player:
-        return
-    for child in player.get_children():
-        if child is BaseWeapon:
-            var up := UpgradeData.new()
-            up.id = "auto_projectile_up"
-            up.target_weapon_name = child.weapon_data.name
-            up.add_projectiles = 1
-            child.apply_upgrade(up)
+

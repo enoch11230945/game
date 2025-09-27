@@ -39,12 +39,10 @@ func _ready() -> void:
     
     # Load starting weapon
     if not starting_weapon_data:
-        starting_weapon_data = load("res://features/weapons/weapon_data/throwing_knife.tres")
-    
+        starting_weapon_data = DataManager.get_weapon("Throwing Knife")
     if starting_weapon_data:
         equip_weapon(starting_weapon_data)
-    # 自動再裝備一把 Fan Knife 進行多武器數據驅動測試
-    var fan = load("res://features/weapons/weapon_data/fan_knife.tres")
+    var fan = DataManager.get_weapon("Fan Knife")
     if fan:
         equip_weapon(fan)
     

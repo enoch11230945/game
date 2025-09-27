@@ -1,63 +1,32 @@
-# src/ui/hud/HUD.gd
 extends CanvasLayer
+class_name HUD
 
-@onready var health_label = $Control/TopLeftContainer/HealthLabel
-@onready var score_label = $Control/TopLeftContainer/ScoreLabel
-@onready var wave_label = $Control/TopLeftContainer/WaveLabel
-@onready var fps_label = $Control/TopLeftContainer/FPSLabel
+@onready var level_label = $Stats/LevelLabel
+@onready var xp_label = $Stats/XPLabel
+@onready var kills_label = $Stats/KillsLabel
+@onready var proj_label = $Stats/ProjectilesLabel
 
-var player: CharacterBody2D = null
-var score: int = 0
-var current_wave: int = 1
-var last_health: int = 100
+var _timer: float = 0.0
+@export var update_interval: float = 0.5
 
-func _ready():
-    # Find the player
-    player = get_tree().get_first_node_in_group("player")
-    if player:
-        print("🎮 HUD connected to player")
-    else:
-        print("⚠️ HUD: Player not found")
+func _process(delta: float) -> void:
+	_timer += delta
+	if _timer >= update_interval:
+		_timer = 0.0
+		_update_stats()
 
-    # Connect to game events (safe connection)
-    if Game:
-        if Game.has_signal("score_changed"):
-            Game.connect("score_changed", _on_score_changed)
-        if Game.has_signal("level_up"):
-            Game.connect("level_up", _on_level_up)
+func _update_stats():
+	var gs = Game.get_game_stats()
+	level_label.text = "Level: %d" % gs.level
+	xp_label.text = "XP: %d/%d" % [gs.current_xp, gs.required_xp]
+	kills_label.text = "Kills: %d" % gs.enemies_killed
+	proj_label.text = _format_weapon_projectiles()
 
-    update_display()
-
-func _process(_delta):
-    # Update FPS display
-    fps_label.text = "FPS: " + str(Engine.get_frames_per_second())
-
-    # Simple health display for now - no player property access
-    health_label.text = "Health: 100/100"
-
-func update_display():
-    """Update all HUD displays"""
-    health_label.text = "Health: 100/100"
-    score_label.text = "Score: " + str(score)
-    wave_label.text = "Wave: " + str(current_wave)
-    fps_label.text = "FPS: " + str(Engine.get_frames_per_second())
-
-func _on_score_changed(new_score: int):
-    """Called when score changes"""
-    score = new_score
-    score_label.text = "Score: " + str(score)
-
-func _on_level_up():
-    """Called when player levels up"""
-    current_wave += 1
-    wave_label.text = "Wave: " + str(current_wave)
-
-func set_score(new_score: int):
-    """Set score from external systems"""
-    score = new_score
-    update_display()
-
-func set_wave(wave_number: int):
-    """Set wave number from external systems"""
-    current_wave = wave_number
-    update_display()
+func _format_weapon_projectiles() -> String:
+	if not Game.player:
+		return "Shots/Weapon: -"
+	var arr: Array[String] = []
+	for c in Game.player.get_children():
+		if c is BaseWeapon:
+			arr.append("%s=%d" % [c.weapon_data.name, c.weapon_data.projectile_count])
+	return "Shots/Weapon: " + ", ".join(arr)

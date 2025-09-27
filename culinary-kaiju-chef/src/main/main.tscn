@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://src/main/Main.gd" id="1"]
 [ext_resource type="PackedScene" path="res://features/player/Player.tscn" id="2"]
 [ext_resource type="Script" path="res://src/core/spawner/EnemySpawner.gd" id="3"]
 [ext_resource type="Resource" path="res://src/core/spawner/wave_1.tres" id="4"]
+
+[ext_resource type="PackedScene" path="res://src/ui/hud/HUD.tscn" id="5"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -24,3 +26,5 @@ environment = SubResource("Environment_1")
 
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("3")
+
+[node name="HUD" parent="." instance=ExtResource("5")]
