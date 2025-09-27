@@ -110,7 +110,11 @@ func die() -> void:
     # Spawn XP gem at death location
     if xp_gem_scene:
         var gem = ObjectPool.request(xp_gem_scene)
-        get_tree().get_root().add_child(gem)
+        var collect_layer = get_tree().get_first_node_in_group("collectables_layer")
+        if collect_layer:
+            collect_layer.add_child(gem)
+        else:
+            get_tree().get_root().add_child(gem)
         gem.global_position = self.global_position
         
         # Initialize gem if it has an initialize method

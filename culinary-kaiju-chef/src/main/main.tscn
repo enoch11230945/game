@@ -17,6 +17,8 @@ player_scene = ExtResource("2")
 
 [node name="Entities" type="Node2D" parent="."]
 
+[node name="Collectables" type="Node2D" parent="." groups=["collectables_layer"]]
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_1")
 

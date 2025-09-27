@@ -11,6 +11,10 @@ var _cooldown_accumulator: float = 0.0
 func _ready() -> void:
     projectile_scene = preload("res://features/weapons/base_weapon/BaseProjectile.tscn")
 
+    # 監聽武器升級事件（集中 Data 驅動）
+    if EventBus.has_signal("upgrade_selected"):
+        EventBus.upgrade_selected.connect(apply_upgrade)
+
 func initialize(player_ref: Node2D, weapon_data_ref: Resource) -> void:
     player = player_ref
     weapon_data = weapon_data_ref
@@ -93,6 +97,11 @@ func apply_upgrade(upgrade: UpgradeData) -> void:
         weapon_data.damage = int(weapon_data.damage * upgrade.damage_multiplier)
     if upgrade.cooldown_multiplier != 1.0:
         weapon_data.cooldown *= upgrade.cooldown_multiplier
+
+func _ready() -> void:
+    # 監聽升級事件
+    if EventBus.has_signal("upgrade_selected"):
+        EventBus.upgrade_selected.connect(apply_upgrade)
 
 func get_weapon_stats() -> Dictionary:
     if not weapon_data:
