@@ -1,6 +1,38 @@
-".godot/"  
-"export/"  
-"*.translation"  
-"*.remap" 
-Godot_v4.5-stable_win64.exe/ 
-*.png 
+# Godot-specific ignores
+.godot/
+.mono/
+data_*/
+export_presets.cfg
+*.translation
+
+# Exported game files
+export/
+build/
+
+# Mono/.NET-specific ignores
+bin/
+obj/
+Properties/
+*.csproj
+*.sln
+
+# General ignores
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+.Trashes
+.idea/
+.vscode/
+
+# Ignore large binary asset files that should be handled by Git LFS
+# *.psd
+# *.blend
+
+# NEVER ignore your actual game assets like these:
+# *.png
+# *.jpg
+# *.tscn
+# *.gd
+# *.tres
+# *.res

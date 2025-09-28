@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/data/WeaponData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+name = "Cleaver Storm Supreme"
+damage = 40
+cooldown = 0.3
+speed = 400.0
+weapon_range = 500.0
+projectile_count = 8
+max_level = 1
+is_evolved = true
+damage_per_level = 0
+cooldown_reduction_per_level = 0.0
+piercing = 3
+lifetime = 4.0
+spread_angle = 360.0

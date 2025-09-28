@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/core/data/EnemyData.gd" id="1"]
+[ext_resource type="PackedScene" path="res://features/enemies/base_enemy/BaseEnemy.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+name = "Tomato Overlord"
+health = 800
+speed = 25.0
+damage = 35
+xp_reward = 200
+scene = ExtResource("2")
+sprite_modulate = Color(1.2, 0.2, 0.2, 1)
+sprite_scale = Vector2(4.0, 4.0)
+separation_strength = 1.5
+separation_radius = 120.0

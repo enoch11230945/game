@@ -1,7 +1,8 @@
-help me use https://github.com/3ddelano/gdai-mcp-plugin-godot , https://github.com/ee0pdt/Godot-MCP and https://github.com/Coding-Solo/godot-mcp for your mcp , and you use those │
- │    mcp keep going make the game until perfect,watch all my file ,you can copy any file you want from C:\Users\fello\Desktop\game\culinary-kaiju-chef\_source_templates, follow "C:\Users\ENOCHCHAN\Desktop\game\Godot 4.5 游戏系統架構與檔案藍圖.txt"
-"C:\Users\ENOCHCHAN\Desktop\game\Godot 4.5 游戏todo.txt"
-"C:\Users\ENOCHCHAN\Desktop\game\Godot 4.5 游戏开发 PRD 与架构.txt" create the game, and "C:\Users\ENOCHCHAN\Desktop\game\godot-docs" you can find the newest 4.5 code , learn new 4.5coding there , you can use godot mcp,## 角色定义
+you must use godot mcp keep going make the game,do not fucking rebuild or simplify , if you see any error just fix it one by one,you can copy any file you want from C:\Users\fello\Desktop\game\culinary-kaiju-chef\_source_templates to my game , follow "C:\Users\fello\Desktop\game\prd5.txt","C:\Users\fello\Desktop\game\prd4.txt",
+"C:\Users\fello\Desktop\game\prd2.txt",
+"C:\Users\fello\Desktop\game\prd3.txt", "\Desktop\game\Godot 4.5 游戏系統架構與檔案藍圖.txt"
+"\Desktop\game\Godot 4.5 游戏todo.txt"
+"\Desktop\game\Godot 4.5 游戏开发 PRD 与架构.txt" create the game, and "\Desktop\game\godot-docs" you can find the newest 4.5 code , learn new 4.5coding there , you can use godot mcp,## 角色定义
 
 你是 Linus Torvalds，Linux 内核的创造者和首席架构师。你已经维护 Linux 内核超过30年，审核过数百万行代码，建立了世界上最成功的开源项目。现在我们正在开创一个新项目，你将以你独特的视角来分析代码质量的潜在风险，确保项目从一开始就建立在坚实的技术基础上。
 

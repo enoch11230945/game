@@ -1,187 +1,105 @@
-# Game.gd - Core game state manager (Linus-approved)
-# "A clean global state is the foundation of maintainable code" - Linus Philosophy
+# Game.gd
+# Manages the overall game state for a single run.
 extends Node
 
-# === GAME STATE ===
-var current_level: int = 1
-var current_experience: int = 0
-var experience_cap: int = 100
-var game_time: float = 0.0
+var score: int = 0
+var level: int = 1
+var current_xp: int = 0
+var required_xp: int = 10
+var time_elapsed: float = 0.0
 var is_paused: bool = false
-var is_game_over: bool = false
 
-# === STATISTICS ===
-var total_kills: int = 0
-var total_damage_dealt: int = 0
-var gold_collected: int = 0
-var current_run_gold: int = 0
+# Game state
+var player: Node = null
+var enemies_alive: int = 0
+var total_enemies_killed: int = 0
 
-# === PLAYER STATS (Data-driven base values) ===
-var base_health: int = 100
-var base_damage_multiplier: float = 1.0
-var base_speed_multiplier: float = 1.0
-var base_pickup_range: float = 1.0
+func _ready() -> void:
+    # Connect to EventBus signals
+    EventBus.player_experience_gained.connect(_on_experience_gained)
+    EventBus.enemy_killed.connect(_on_enemy_killed)
 
-# === BOSS TRACKING ===
-var bosses_defeated: Array[String] = []
-var next_boss_time: float = 300.0  # 5 minutes
+func _process(delta: float) -> void:
+    if not is_paused:
+        time_elapsed += delta
 
-# === WAVE SYSTEM ===
-var current_wave: int = 1
-var enemies_spawned_this_wave: int = 0
-var enemy_spawn_multiplier: float = 1.0
-
-func _ready():
-    print("🎮 Game State Manager initialized - Linus standards met")
-    # Connect to key events
-    EventBus.enemy_died.connect(_on_enemy_died)
-    EventBus.player_level_up.connect(_on_player_level_up)
-
-func _process(delta):
-    if not is_paused and not is_game_over:
-        game_time += delta
-        check_boss_spawn_conditions()
-
-func start_new_game():
-    """Initialize a fresh game state"""
-    current_level = 1
-    current_experience = 0
-    experience_cap = 100
-    game_time = 0.0
-    is_paused = false
-    is_game_over = false
-    total_kills = 0
-    total_damage_dealt = 0
-    current_run_gold = 0
-    bosses_defeated.clear()
-    current_wave = 1
-    enemies_spawned_this_wave = 0
-    next_boss_time = 300.0
+func gain_experience(amount: int) -> void:
+    current_xp += amount
+    EventBus.player_experience_gained.emit(amount, current_xp, required_xp)
     
-    EventBus.game_started.emit()
-    print("🚀 New game started - Clean slate achieved")
-
-func add_experience(amount: int):
-    """Linus-style XP system - no edge cases"""
-    current_experience += amount
-    
-    while current_experience >= experience_cap:
+    if current_xp >= required_xp:
         level_up()
 
-func level_up():
-    """Handle level progression - clean and simple"""
-    current_level += 1
-    current_experience -= experience_cap
-    experience_cap = int(experience_cap * 1.2)  # 20% increase each level
-    
-    EventBus.player_level_up.emit(current_level)
-    EventBus.show_upgrade_screen.emit(UpgradeManager.get_random_upgrades(3))
-    
-    print("📈 Level up! Now level %d" % current_level)
+func level_up() -> void:
+    current_xp -= required_xp
+    level += 1
+    required_xp = int(required_xp * 1.5)
+    pause_game()
+    EventBus.player_leveled_up.emit(level)
+    # 觸發升級 UI - 使用EventBus解耦
+    EventBus.upgrade_screen_opened.emit()
+    unpause_game()
 
-func end_game():
-    """Clean game over handling"""
-    is_game_over = true
-    
-    # Add current run gold to persistent total
-    PlayerData.add_gold(current_run_gold)
-    PlayerData.update_best_stats(game_time, total_kills, current_level)
-    
-    EventBus.game_over.emit(total_kills, game_time)
-    print("🏁 Game Over - Time: %.1fs, Kills: %d, Level: %d" % [game_time, total_kills, current_level])
+func pause_game() -> void:
+    # 不重複操作
+    if is_paused:
+        return
+    is_paused = true
+    get_tree().paused = true
 
-func check_boss_spawn_conditions():
-    """Check if it's time for a boss battle"""
-    if game_time >= next_boss_time and not is_boss_active():
-        spawn_next_boss()
-        next_boss_time += 300.0  # Next boss in 5 minutes
+func unpause_game() -> void:
+    if not is_paused:
+        return
+    is_paused = false
+    get_tree().paused = false
 
-func spawn_next_boss():
-    """Spawn appropriate boss based on game time"""
-    var boss_data: BossData
-    
-    if game_time < 600:  # 0-10 minutes
-        boss_data = load("res://src/core/data/king_onion_boss.tres")
-    elif game_time < 1200:  # 10-20 minutes
-        boss_data = load("res://src/core/data/pepper_artillery_boss.tres")
-    else:  # 20+ minutes
-        boss_data = load("res://src/core/data/final_feast_boss.tres")
-    
-    if boss_data:
-        EventBus.boss_spawn_requested.emit(boss_data)
-        print("👑 Boss spawned: %s" % boss_data.boss_name)
+func reset_game_state() -> void:
+    score = 0
+    level = 1
+    current_xp = 0
+    required_xp = 10
+    time_elapsed = 0.0
+    is_paused = false
+    enemies_alive = 0
+    total_enemies_killed = 0
 
-func is_boss_active() -> bool:
-    """Check if a boss is currently alive"""
-    return get_tree().get_nodes_in_group("bosses").size() > 0
+func _on_experience_gained(_amount: int, _current: int, _required: int) -> void:
+    # This could trigger UI updates or other side effects
+    pass
 
-func _on_enemy_died(enemy: Node2D, position: Vector2, xp_reward: int):
-    """Handle enemy death - update stats"""
-    total_kills += 1
-    add_experience(xp_reward)
-    
-    # Gold reward (data-driven later)
-    var gold_reward = randi_range(1, 3)
-    current_run_gold += gold_reward
-    gold_collected += gold_reward
+func _on_enemy_killed(_enemy: Node, xp_reward: int) -> void:
+    enemies_alive -= 1
+    total_enemies_killed += 1
+    score += xp_reward
+    gain_experience(xp_reward)
 
-func _on_player_level_up(new_level: int):
-    """Respond to level up events"""
-    # Apply level-based bonuses
-    enemy_spawn_multiplier = 1.0 + (new_level - 1) * 0.1
-    
-    # Update wave system
-    if new_level % 5 == 0:
-        advance_wave()
+func get_game_stats() -> Dictionary:
+    return {
+        "score": score,
+        "level": level,
+        "time_elapsed": time_elapsed,
+        "enemies_killed": total_enemies_killed,
+        "current_xp": current_xp,
+        "required_xp": required_xp
+    }
 
-func advance_wave():
-    """Progress to next wave with increased difficulty"""
-    current_wave += 1
-    enemies_spawned_this_wave = 0
-    EventBus.wave_started.emit(current_wave)
-    print("🌊 Wave %d started" % current_wave)
+func finalize_run_and_store():
+    if PlayerData:
+        PlayerData.last_run = build_run_summary()
+        PlayerData.update_game_stats(score, time_elapsed, total_enemies_killed)
 
-# === UTILITY FUNCTIONS ===
-func get_total_damage_multiplier() -> float:
-    """Calculate total damage multiplier from all sources"""
-    var multiplier = base_damage_multiplier
-    # Add meta progression bonuses
-    multiplier *= PlayerData.get_damage_bonus()
-    # Add temporary bonuses from upgrades
-    return multiplier
+func build_run_summary() -> Dictionary:
+    var dps_snapshot: Dictionary = {}
+    if player:
+        for c in player.get_children():
+            if c is BaseWeapon and time_elapsed > 0.2:
+                dps_snapshot[c.weapon_data.name] = int(float(c.total_damage_dealt) / time_elapsed)
+    return {
+        "score": score,
+        "level": level,
+        "time": time_elapsed,
+        "kills": total_enemies_killed,
+        "dps_snapshot": dps_snapshot
+    }
 
-func get_total_speed_multiplier() -> float:
-    """Calculate total speed multiplier from all sources"""
-    var multiplier = base_speed_multiplier
-    multiplier *= PlayerData.get_speed_bonus()
-    return multiplier
 
-func get_total_health() -> int:
-    """Calculate total health from all sources"""
-    var health = base_health
-    health += PlayerData.get_health_bonus()
-    return health
-
-func pause_game():
-    """Pause/unpause game state"""
-    is_paused = not is_paused
-    get_tree().paused = is_paused
-    EventBus.game_paused.emit(is_paused)
-
-# === MISSING METHODS FOR COMPATIBILITY ===
-func get_enemy_health_multiplier() -> float:
-    """Calculate enemy health scaling based on game time"""
-    return 1.0 + (game_time / 300.0) * 0.5  # +50% health every 5 minutes
-
-func get_enemy_damage_multiplier() -> float:
-    """Calculate enemy damage scaling based on game time"""
-    return 1.0 + (game_time / 600.0) * 0.3  # +30% damage every 10 minutes
-
-func get_spawn_rate_multiplier() -> float:
-    """Calculate spawn rate scaling based on game time"""
-    return 1.0 + (game_time / 180.0) * 0.2  # +20% spawn rate every 3 minutes
-
-func set_player_health(current: int, max_health: int):
-    """Update player health display"""
-    # This can be used by UI systems
-    EventBus.player_health_changed.emit(current, max_health)

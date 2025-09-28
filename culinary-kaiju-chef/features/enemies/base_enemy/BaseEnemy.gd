@@ -18,11 +18,8 @@ var sprite: Sprite2D
 var collision_shape: CollisionShape2D
 
 func _ready() -> void:
-    # Load XP gem scene dynamically - ensure path is correct
-    if ResourceLoader.exists("res://features/items/xp_gem/XPGem.tscn"):
-        xp_gem_scene = preload("res://features/items/xp_gem/XPGem.tscn")
-    else:
-        print("⚠️ XPGem.tscn not found at expected path")
+    # Load XP gem scene dynamically
+    xp_gem_scene = preload("res://features/items/xp_gem/XPGem.tscn")
     
     # Cache component references
     sprite = $Sprite2D
@@ -62,24 +59,16 @@ func _physics_process(delta: float) -> void:
     var direction_to_target = (target.global_position - self.global_position).normalized()
     # 行為層：速度基礎
     velocity = direction_to_target * speed
-    # Speed Demon wobble - Sinusoidal movement pattern
-    if data and data.wobble_amplitude > 0.0:
-        var wobble_freq = data.wobble_frequency
-        var wobble_amp = data.wobble_amplitude
+    # Speed Demon wobble
+    if data and data.wobble_amplitude > 0.0 and data.wobble_frequency > 0.0:
         var t = Time.get_ticks_msec() / 1000.0
-        var perpendicular = Vector2(-direction_to_target.y, direction_to_target.x)
-        var wobble_offset = perpendicular * wobble_amp * sin(t * wobble_freq + float(get_instance_id() % 1024))
-        velocity += wobble_offset
-    
-    # Tank Brute charge pattern - Periodic speed bursts
-    if data and data.charge_interval > 0.0:
-        var charge_interval = data.charge_interval
-        var charge_duration = data.charge_duration
-        var charge_multiplier = data.charge_multiplier
-        var charge_phase = fmod(Time.get_ticks_msec() / 1000.0, charge_interval)
-        
-        if charge_phase < charge_duration:
-            velocity += direction_to_target * speed * (charge_multiplier - 1.0)
+        var perp = Vector2(-direction_to_target.y, direction_to_target.x)
+        velocity += perp * data.wobble_amplitude * sin(t * data.wobble_frequency + float(get_instance_id() % 1024))
+    # Tank Brute charge
+    if data and data.charge_interval > 0.1 and data.charge_multiplier > 1.0 and data.charge_duration > 0.05:
+        var phase = fmod(Time.get_ticks_msec()/1000.0, data.charge_interval)
+        if phase < data.charge_duration:
+            velocity += direction_to_target * speed * (data.charge_multiplier - 1.0)
     
     # 2. (Performance Optimization) Calculate separation force to avoid clumping
     # This is staggered across frames to maintain 60fps with hundreds of enemies
@@ -98,25 +87,20 @@ func _physics_process(delta: float) -> void:
         sprite.scale.x = abs(sprite.scale.x) * (-1 if velocity.x < 0 else 1)
 
 func _compute_separation_vector() -> Vector2:
-    """Manual separation using PhysicsDirectSpaceState2D - Linus approved performance"""
     var space_state = get_world_2d().direct_space_state
     _sep_shape.radius = data.separation_radius if data else 40.0
     var query = PhysicsShapeQueryParameters2D.new()
-    query.shape = _sep_shape
+    query.shape_rid = _sep_shape.get_rid()
     query.transform = global_transform
-    query.collision_mask = collision_layer  # Only check same layer (enemies)
+    query.collision_mask = collision_layer
     query.exclude = [self.get_rid()]
-    
     var results: Array[Dictionary] = space_state.intersect_shape(query)
     var push: Vector2 = Vector2.ZERO
-    
     for result in results:
         var neighbor = result.get("collider")
         if is_instance_valid(neighbor) and neighbor != self:
-            var direction_away = (global_position - neighbor.global_position).normalized()
-            push += direction_away
-    
-    return push.normalized() if push.length() > 0 else Vector2.ZERO
+            push += (global_position - neighbor.global_position).normalized()
+    return push
 
 func take_damage(amount: int) -> void:
     health -= amount
@@ -136,25 +120,24 @@ func take_damage(amount: int) -> void:
 func die() -> void:
     # Spawn XP gem at death location
     if xp_gem_scene:
-        var gem = ObjectPool.get_xp_gem(xp_gem_scene)
-        if gem:
-            var collect_layer = get_tree().get_first_node_in_group("collectables_layer")
-            if collect_layer:
-                collect_layer.add_child(gem)
-            else:
-                get_tree().get_root().add_child(gem)
-            gem.global_position = self.global_position
-            
-            # Initialize gem if it has an initialize method
-            if gem.has_method("initialize"):
-                gem.initialize(data.xp_reward if data else 5)
+        var gem = ObjectPool.request(xp_gem_scene)
+        var collect_layer = get_tree().get_first_node_in_group("collectables_layer")
+        if collect_layer:
+            collect_layer.add_child(gem)
+        else:
+            get_tree().get_root().add_child(gem)
+        gem.global_position = self.global_position
+        
+        # Initialize gem if it has an initialize method
+        if gem.has_method("initialize"):
+            gem.initialize(data.xp_reward if data else 5)
     
     # Notify game systems
     EventBus.enemy_killed.emit(self, data.xp_reward if data else 5)
     Game.score += (data.xp_reward if data else 5)
     
     # Return to object pool instead of queue_free()
-    ObjectPool.return_enemy(self)
+    ObjectPool.reclaim(self)
 
 func reset_state() -> void:
     # Reset all variables for reuse when requested from object pool

@@ -80,16 +80,14 @@ func on_damage_interval_timer_timeout():
 
 
 func on_health_changed():
-	EventBus.player_damaged.emit()
+	GameEvents.emit_player_damaged()
 	update_health_display()
 	$HitRandomStreamPlayer.play_random()
 
 
-func on_ability_upgrade_added(ability_upgrade: Resource, current_upgrades: Dictionary):
-	# Simplified ability upgrade handling
-	if ability_upgrade.has_method("apply_upgrade"):
-		ability_upgrade.apply_upgrade(self)
-	elif ability_upgrade.get("id") == "player_speed":
-		# Handle speed upgrades
-		var speed_bonus = current_upgrades.get("player_speed", {}).get("quantity", 0) * 0.1
-		# velocity_component.max_speed = base_speed + (base_speed * speed_bonus)
+func on_ability_upgrade_added(ability_upgrade: AbilityUpgrade, current_upgrades: Dictionary):
+	if ability_upgrade is Ability:
+		var ability = ability_upgrade as Ability
+		abilities.add_child(ability.ability_controller_scene.instantiate())
+	elif ability_upgrade.id == "player_speed":
+		velocity_component.max_speed = base_speed + (base_speed * current_upgrades["player_speed"]["quantity"] * 0.1)

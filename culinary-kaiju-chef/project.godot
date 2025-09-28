@@ -23,8 +23,8 @@ ObjectPool="*res://src/autoload/ObjectPool.gd"
 PlayerData="*res://src/autoload/PlayerData.gd"
 DataManager="*res://src/autoload/DataManager.gd"
 UpgradeManager="*res://src/autoload/UpgradeManager.gd"
-AudioManager="*res://src/audio/AudioManager.gd"
-SceneLoader="*res://src/autoload/SceneLoader.gd"
+AudioManager="*res://src/autoload/AudioManager.gd"
+EffectsManager="*res://src/autoload/EffectsManager.gd"
 
 [input]
 

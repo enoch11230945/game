@@ -30,11 +30,13 @@ var sub_menu
 @onready var back_button = %BackButton
 
 func load_game_scene() -> void:
+	# 強制使用 SceneLoader 讀取 survivor_core 主玩法場景，忽略外部輸入的 game_scene_path 特殊情況。
+	var target_scene_path := "res://features/survivor_core/main.tscn"
 	if signal_game_start:
-		SceneLoader.load_scene(game_scene_path, true)
+		SceneLoader.load_scene(target_scene_path, true)
 		game_started.emit()
 	else:
-		SceneLoader.load_scene(game_scene_path)
+		SceneLoader.load_scene(target_scene_path)
 
 func new_game() -> void:
 	load_game_scene()

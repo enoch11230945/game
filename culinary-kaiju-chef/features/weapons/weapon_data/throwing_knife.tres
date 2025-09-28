@@ -1,15 +1,21 @@
-[gd_resource type="WeaponData" format=3 uid="uid://bx4k9m2n7q8w1"]
+[gd_resource type="Resource" script_class="WeaponData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/core/data/WeaponData.gd" id="1"]
+[ext_resource type="Resource" path="res://features/weapons/weapon_data/cleaver_storm_evolved.tres" id="2"]
 
 [resource]
-weapon_name = "Throwing Knife"
-description = "Sharp knives that pierce enemies"
+script = ExtResource("1")
+name = "Throwing Knife"
 damage = 15
 cooldown = 0.8
 speed = 300.0
-range = 400.0
+weapon_range = 400.0
 projectile_count = 4
+max_level = 8
+evolution_result = ExtResource("2")
+is_evolved = false
+damage_per_level = 3
+cooldown_reduction_per_level = 0.05
 piercing = 0
 lifetime = 3.0
 spread_angle = 90.0
-weapon_type = "projectile"
-auto_aim = true

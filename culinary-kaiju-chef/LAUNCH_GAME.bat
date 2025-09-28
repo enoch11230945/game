@@ -1,14 +1,23 @@
 @echo off
-echo 🎮 Launching Culinary Kaiju Chef...
 echo.
-echo ✅ All Epic features implemented:
-echo    - Epic 1: Weapon Evolution, 10 Enemies, 5 Weapons, Boss Fights
-echo    - Epic 2: Meta-Progression, Character System  
-echo    - Epic 3: Ad System, IAP System
+echo 🍳🐉 === LAUNCHING CULINARY KAIJU CHEF === 🐉🍳
 echo.
-echo 🚀 Starting game...
+echo Built with Linus Torvalds Philosophy:
+echo "Good programmers worry about data structures and their relationships."
+echo.
+echo Controls:
+echo   WASD: Move
+echo   Enter: Spawn enemies (test)
+echo   Space: Level up (test)
+echo   1/2/3: Choose upgrades
+echo   Escape: Restart
+echo.
+echo Starting game...
 echo.
 
-"C:\Users\fello\Desktop\game\Godot_v4.5-stable_win64.exe" "project.godot"
+cd /d "%~dp0"
+"..\Godot_v4.5-stable_win64.exe" --path . PERFECT_GAME.tscn
 
-pause
+echo.
+echo Game closed. Press any key to exit...
+pause > nul

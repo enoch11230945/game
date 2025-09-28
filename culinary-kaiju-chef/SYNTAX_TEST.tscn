@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cs6t8bae2b4f1"]
-
-[ext_resource type="Script" path="res://SYNTAX_TEST.gd" id="1_syntax"]
-
-[node name="SYNTAX_TEST" type="Node"]
-script = ExtResource("1_syntax")

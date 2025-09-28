@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3]
-
-[ext_resource type="Script" path="res://LINUS_FIXED_CLEAN_GAME.gd" id="1_linus_fixed"]
-
-[node name="LINUS_FIXED_CLEAN_GAME" type="Node2D"]
-script = ExtResource("1_linus_fixed")

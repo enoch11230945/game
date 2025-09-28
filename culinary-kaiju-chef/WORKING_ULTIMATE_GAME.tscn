@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://bpg8i2c1fj0mn"]
+
+[ext_resource type="Script" path="res://WORKING_ULTIMATE_GAME.gd" id="1_0hdkq"]
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 1
+background_color = Color(0.1, 0.1, 0.15, 1)
+
+[node name="PerfectGame" type="Node2D"]
+script = ExtResource("1_0hdkq")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1")

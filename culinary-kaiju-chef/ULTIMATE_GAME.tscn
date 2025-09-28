@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://bch7k2n1f8jvg"]
+
+[ext_resource type="Script" path="res://ULTIMATE_GAME.gd" id="1_x5n8m"]
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 1
+background_color = Color(0.05, 0.05, 0.1, 1)
+ambient_light_color = Color(0.3, 0.3, 0.4, 1)
+ambient_light_energy = 0.5
+
+[node name="UltimateGame" type="Node2D"]
+script = ExtResource("1_x5n8m")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1")
