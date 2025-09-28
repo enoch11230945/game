@@ -63,7 +63,8 @@ func _display_upgrade_options() -> void:
 
 func _on_upgrade_selected(upgrade_data: Resource, card_index: int) -> void:
     """Handle upgrade selection"""
-    print("✅ Selected upgrade: %s" % upgrade_data.get("item_name", "Unknown"))
+    var upgrade_name = upgrade_data.upgrade_name if upgrade_data.has_method("get") and upgrade_data.upgrade_name else "Unknown"
+    print("✅ Selected upgrade: %s" % upgrade_name)
     
     # Apply upgrade
     UpgradeManager.apply_upgrade(upgrade_data)

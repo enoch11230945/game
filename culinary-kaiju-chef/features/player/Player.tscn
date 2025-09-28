@@ -14,8 +14,8 @@ script = ExtResource("1")
 starting_weapon_data = ExtResource("2")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = preload("res://assets/graphics/spritesheets/characters/monster_chef.png")
-scale = Vector2(2.0, 2.0)
+modulate = Color(0, 0.8, 1, 1)
+scale = Vector2(40, 40)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_player")

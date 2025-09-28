@@ -2,7 +2,8 @@ extends Node
 class_name BossManager
 
 @export var boss_enemy_scene: PackedScene
-@export var arena_time_manager: ArenaTimeManager
+# Removed ArenaTimeManager dependency - use Game.game_time instead
+# @export var arena_time_manager: ArenaTimeManager
 
 @onready var boss_timer = Timer.new()
 

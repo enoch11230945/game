@@ -167,3 +167,21 @@ func pause_game():
     is_paused = not is_paused
     get_tree().paused = is_paused
     EventBus.game_paused.emit(is_paused)
+
+# === MISSING METHODS FOR COMPATIBILITY ===
+func get_enemy_health_multiplier() -> float:
+    """Calculate enemy health scaling based on game time"""
+    return 1.0 + (game_time / 300.0) * 0.5  # +50% health every 5 minutes
+
+func get_enemy_damage_multiplier() -> float:
+    """Calculate enemy damage scaling based on game time"""
+    return 1.0 + (game_time / 600.0) * 0.3  # +30% damage every 10 minutes
+
+func get_spawn_rate_multiplier() -> float:
+    """Calculate spawn rate scaling based on game time"""
+    return 1.0 + (game_time / 180.0) * 0.2  # +20% spawn rate every 3 minutes
+
+func set_player_health(current: int, max_health: int):
+    """Update player health display"""
+    # This can be used by UI systems
+    EventBus.player_health_changed.emit(current, max_health)

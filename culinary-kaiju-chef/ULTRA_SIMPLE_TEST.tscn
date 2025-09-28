@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cq8x5oap3k7m2"]
+
+[ext_resource type="Script" path="res://ULTRA_SIMPLE_TEST.gd" id="1_ultra"]
+
+[node name="ULTRA_SIMPLE_TEST" type="Node"]
+script = ExtResource("1_ultra")

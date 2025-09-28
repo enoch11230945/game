@@ -1,7 +1,7 @@
 extends Control
 
 # 游戏内HUD界面
-class_name GameHUD
+# Removed conflicting class_name GameHUD
 
 @onready var health_bar: ProgressBar = $TopBar/HealthBar
 @onready var experience_bar: ProgressBar = $TopBar/ExperienceBar

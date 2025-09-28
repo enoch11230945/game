@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bv5x8c2laf1m4"]
+
+[ext_resource type="Script" path="res://AUTOLOAD_VALIDATION.gd" id="1_validation"]
+
+[node name="AUTOLOAD_VALIDATION" type="Node"]
+script = ExtResource("1_validation")

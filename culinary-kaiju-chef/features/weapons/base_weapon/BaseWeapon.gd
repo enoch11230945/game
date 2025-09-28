@@ -9,6 +9,7 @@ var projectile_scene: PackedScene
 var _cooldown_accumulator: float = 0.0
 var fired_count: int = 0
 var total_damage_dealt: int = 0
+var attacks_performed: int = 0  # Add missing variable
 
 func _ready() -> void:
     projectile_scene = preload("res://features/weapons/base_weapon/BaseProjectile.tscn")
@@ -110,6 +111,18 @@ func apply_upgrade(upgrade_data: Resource):
     
     # This would be implemented based on your upgrade system
     print("Weapon %s applying upgrade: %s" % [weapon_data.weapon_name, upgrade_data])
+
+func _fire_spread_attack(base_direction: Vector2, count: int, angle_spread: float):
+    """Fire multiple projectiles in a spread pattern"""
+    var directions: Array[Vector2] = []
+    
+    if count == 1:
+        directions.append(base_direction)
+    else:
+        var start_angle = -angle_spread / 2.0
+        var angle_step = angle_spread / (count - 1)
+        
+        for i in range(count):
             var angle = start_angle + (angle_step * i)
             var direction = base_direction.rotated(angle)
             directions.append(direction)
@@ -119,53 +132,20 @@ func apply_upgrade(upgrade_data: Resource):
         _fire_projectile(direction)
     fired_count += directions.size()
 
-func _get_best_attack_direction() -> Vector2:
-    # Find the nearest enemy
-    var enemies = get_tree().get_nodes_in_group("enemies")
-    var nearest_enemy: Node2D = null
-    var min_distance = INF
-    
-    for enemy in enemies:
-        if enemy is Node2D:
-            var distance = player.global_position.distance_to(enemy.global_position)
-            if distance < min_distance and distance <= weapon_data.range:
-                min_distance = distance
-                nearest_enemy = enemy
-    
-    if nearest_enemy:
-        return (nearest_enemy.global_position - player.global_position).normalized()
-    else:
-        # Default to right direction if no enemies found
-        return Vector2.RIGHT
-
-func _fire_projectile(direction: Vector2) -> void:
-    var projectile = ObjectPool.request(projectile_scene)
-    if projectile:
-        var projectile_layer = get_tree().get_first_node_in_group("projectiles_layer")
-        if projectile_layer:
-            projectile_layer.add_child(projectile)
-        else:
-            get_tree().get_root().add_child(projectile)
-        var spawn_offset = direction * 20
-        projectile.initialize(player.global_position + spawn_offset, direction, weapon_data)
-        EventBus.weapon_fired.emit(self, projectile)
-
-func apply_upgrade(upgrade: UpgradeData) -> void:
-    if not weapon_data or not upgrade:
-        return
-    if upgrade.target_weapon_name != weapon_data.name:
-        return
-    # 修改 Resource 數據（設計上若需可 clone，一般武器升級全域共享也可）
-    if upgrade.add_projectiles != 0:
-        weapon_data.projectile_count = min(weapon_data.projectile_count + upgrade.add_projectiles, 30) # 安全上限
-    if upgrade.damage_multiplier != 1.0:
-        weapon_data.damage = int(weapon_data.damage * upgrade.damage_multiplier)
-    if upgrade.cooldown_multiplier != 1.0:
-        weapon_data.cooldown *= upgrade.cooldown_multiplier
-
 func get_weapon_stats() -> Dictionary:
+    """Get current weapon statistics"""
     if not weapon_data:
         return {}
+    
+    return {
+        "name": weapon_data.weapon_name,
+        "damage": weapon_data.damage,
+        "cooldown": weapon_data.cooldown,
+        "range": weapon_data.range,
+        "projectile_count": weapon_data.projectile_count,
+        "total_damage_dealt": total_damage_dealt,
+        "attacks_performed": attacks_performed
+    }
     
     return {
         "name": weapon_data.name,

@@ -206,7 +206,7 @@ func _on_enemy_killed(enemy: Node, xp_reward: int) -> void:
 
 func _on_upgrade_selected(upgrade_data: Resource) -> void:
     """Track upgrade selections"""
-    var upgrade_name = upgrade_data.get("item_name", "unknown")
+    var upgrade_name = upgrade_data.upgrade_name if upgrade_data and upgrade_data.has_method("get") and upgrade_data.upgrade_name else "unknown"
     track_event("upgrade_selected", {
         "upgrade_name": upgrade_name,
         "player_level": current_level,

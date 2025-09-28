@@ -16,7 +16,7 @@ func show_rewarded_ad(ad_type: AdType, context: Dictionary = {}):
 		AdType.DOUBLE_GOLD:
 			EventBus.emit_signal("gold_multiplier_activated", 2.0)
 		AdType.DAILY_BONUS:
-			MetaProgressionSystem.add_gold(100)
+			PlayerData.add_gold(100)
 		AdType.SKIP_UPGRADE:
 			EventBus.emit_signal("reroll_upgrades_requested")
 

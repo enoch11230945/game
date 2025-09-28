@@ -12,6 +12,10 @@ var current_wave: SpawnWave = null
 var wave_spawn_timer: float = 0.0
 var wave_spawn_count: int = 0
 
+# === SPAWN TIMING (for compatibility) ===
+var base_spawn_interval: float = 2.0
+var current_spawn_interval: float = 2.0
+
 # === ENEMY POOL REFERENCES ===
 var enemy_scenes: Dictionary = {}
 
@@ -133,6 +137,16 @@ func _spawn_wave_enemies() -> void:
         if enemy_data:
             _spawn_single_enemy_from_data(enemy_data, player.global_position)
 
+func _spawn_single_enemy_from_data(enemy_data: EnemyData, player_pos: Vector2) -> void:
+    """Spawn enemy from EnemyData resource"""
+    if enemy_data.scene:
+        var enemy = ObjectPool.get_enemy(enemy_data.scene)
+        if enemy:
+            var spawn_pos = get_spawn_position_around_player(player_pos)
+            enemy.global_position = spawn_pos
+            enemy.initialize(enemy_data)
+            get_tree().current_scene.add_child(enemy)
+
 func _spawn_single_enemy(enemy_type: String, player_pos: Vector2) -> void:
     """Spawn a single enemy using ObjectPool - Linus approved"""
     if not enemy_scenes.has(enemy_type):
@@ -203,7 +217,7 @@ func _on_game_started() -> void:
     """Reset spawner when game starts"""
     game_time = 0.0
     current_wave_index = 0
-    spawn_timer = 0.0
+    wave_spawn_timer = 0.0
     current_spawn_interval = base_spawn_interval
 
 func _on_game_paused(paused: bool) -> void:

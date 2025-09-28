@@ -8,7 +8,7 @@ var mini_broccoli_scene: PackedScene
 func _ready() -> void:
 	super._ready()
 	# 預載小青花菜場景
-	mini_broccoli_scene = preload("res://src/enemies/broccoli_splitter/MiniBroccoli.tscn")
+	mini_broccoli_scene = preload("res://features/enemies/broccoli_splitter/MiniBroccoli.tscn")
 
 func die() -> void:
 	# 播放分裂音效

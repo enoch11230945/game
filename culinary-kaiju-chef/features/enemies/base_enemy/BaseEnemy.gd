@@ -63,19 +63,19 @@ func _physics_process(delta: float) -> void:
     # 行為層：速度基礎
     velocity = direction_to_target * speed
     # Speed Demon wobble - Sinusoidal movement pattern
-    if data and data.has_method("get") and data.get("wobble_amplitude", 0.0) > 0.0:
-        var wobble_freq = data.get("wobble_frequency", 2.0)
-        var wobble_amp = data.get("wobble_amplitude", 50.0)
+    if data and data.wobble_amplitude > 0.0:
+        var wobble_freq = data.wobble_frequency
+        var wobble_amp = data.wobble_amplitude
         var t = Time.get_ticks_msec() / 1000.0
         var perpendicular = Vector2(-direction_to_target.y, direction_to_target.x)
         var wobble_offset = perpendicular * wobble_amp * sin(t * wobble_freq + float(get_instance_id() % 1024))
         velocity += wobble_offset
     
     # Tank Brute charge pattern - Periodic speed bursts
-    if data and data.has_method("get") and data.get("charge_interval", 0.0) > 0.0:
-        var charge_interval = data.get("charge_interval", 3.0)
-        var charge_duration = data.get("charge_duration", 0.5)
-        var charge_multiplier = data.get("charge_multiplier", 2.0)
+    if data and data.charge_interval > 0.0:
+        var charge_interval = data.charge_interval
+        var charge_duration = data.charge_duration
+        var charge_multiplier = data.charge_multiplier
         var charge_phase = fmod(Time.get_ticks_msec() / 1000.0, charge_interval)
         
         if charge_phase < charge_duration:

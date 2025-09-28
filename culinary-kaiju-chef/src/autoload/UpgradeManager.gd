@@ -4,7 +4,20 @@ extends Node
 # === UPGRADE DATABASE ===
 var all_weapons: Array[WeaponData] = []
 var all_items: Array[ItemData] = []
+var all_upgrades: Array[UpgradeData] = []
 var current_upgrades: Dictionary = {}  # Applied upgrades with stack counts
+var upgrade_counts: Dictionary = {}   # Track upgrade stack counts
+var applied_upgrades: Array[UpgradeData] = []
+var weapon_upgrades: Dictionary = {}  # Weapon-specific upgrades
+var passive_upgrades: Array[UpgradeData] = []
+var weapon_levels: Dictionary = {}    # Track weapon levels
+var rarity_weights: Dictionary = {
+    "COMMON": 100,
+    "UNCOMMON": 50,
+    "RARE": 25,
+    "EPIC": 10,
+    "LEGENDARY": 5
+}
 
 # === PLAYER INVENTORY ===
 var equipped_weapons: Array[WeaponData] = []
@@ -17,37 +30,50 @@ func _ready() -> void:
     # Connect to events
     EventBus.upgrade_selected.connect(_on_upgrade_selected)
 
+func _on_upgrade_selected(upgrade_data: UpgradeData) -> void:
+    """Handle when player selects an upgrade"""
+    apply_upgrade(upgrade_data)
+    EventBus.upgrade_applied.emit(upgrade_data)
+
 func _load_upgrade_database() -> void:
     """Load all available weapons and items"""
-    # Load weapons
-    all_weapons.append(load("res://features/weapons/weapon_data/throwing_knife.tres"))
-    all_weapons.append(load("res://features/weapons/weapon_data/whisk_tornado.tres"))
-    all_weapons.append(load("res://features/weapons/weapon_data/spatula_shield.tres"))
+    # Load weapons safely
+    _try_load_weapon("throwing_knife", "res://features/weapons/weapon_data/throwing_knife.tres")
+    _try_load_weapon("cleaver", "res://src/core/data/cleaver_weapon.tres")
     
-    # Load items
-    all_items.append(load("res://features/items/item_data/garlic_aura.tres"))
-    all_items.append(load("res://features/items/item_data/chef_boots.tres"))
+    # Load items safely
+    _try_load_item("garlic_aura", "res://features/items/item_data/garlic_aura.tres")
+    _try_load_item("chef_boots", "res://features/items/item_data/chef_boots.tres")
     
     print("✅ Loaded %d weapons, %d items" % [all_weapons.size(), all_items.size()])
-    var passive_files = [
-        "damage_boost_1", "damage_boost_2", "damage_boost_3",
-        "health_boost_1", "health_boost_2", "health_boost_3",
-        "speed_boost_1", "speed_boost_2", "speed_boost_3",
-        "pickup_range_1", "pickup_range_2", "pickup_range_3",
-        "cooldown_reduction_1", "cooldown_reduction_2", "cooldown_reduction_3",
-        "crit_chance_1", "crit_chance_2", "crit_chance_3",
-        "crit_damage_1", "crit_damage_2", "crit_damage_3",
-        "armor_1", "armor_2", "armor_3",
-        "regeneration_1", "regeneration_2", "regeneration_3",
-        "magnetic_pickup_1", "magnetic_pickup_2", "magnetic_pickup_3",
-        "experience_boost_1", "experience_boost_2", "experience_boost_3",
-        "knockback_immunity", "poison_immunity", "fire_immunity",
-        "double_shot", "triple_shot", "quad_shot",
-        "weapon_evolution_charm", "lucky_charm", "berserker_rage"
-    ]
     
     # Create upgrade data programmatically (since we have many)
     create_weapon_upgrades()
+    create_passive_upgrades()
+    
+    print("📊 Loaded %d upgrades total" % all_upgrades.size())
+
+func _try_load_weapon(key: String, path: String) -> void:
+    if ResourceLoader.exists(path):
+        var weapon = load(path)
+        if weapon:
+            all_weapons.append(weapon)
+            print("✅ Weapon loaded: %s" % key)
+        else:
+            print("⚠️ Weapon failed to load: %s" % path)
+    else:
+        print("⚠️ Weapon file missing: %s" % path)
+
+func _try_load_item(key: String, path: String) -> void:
+    if ResourceLoader.exists(path):
+        var item = load(path)
+        if item:
+            all_items.append(item)
+            print("✅ Item loaded: %s" % key)
+        else:
+            print("⚠️ Item failed to load: %s" % path)
+    else:
+        print("⚠️ Item file missing: %s" % path)
     create_passive_upgrades()
     
     print("📊 Loaded %d upgrades total" % all_upgrades.size())

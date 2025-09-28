@@ -7,12 +7,13 @@ const SPAWN_RADIUS = 375
 @export var wizard_enemy_scene: PackedScene
 @export var tank_enemy_scene: PackedScene
 @export var swarm_enemy_scene: PackedScene
-@export var arena_time_manager: ArenaTimeManager
+# Removed ArenaTimeManager dependency
+# @export var arena_time_manager: ArenaTimeManager
 
 @onready var timer = $Timer
 
 var base_spawn_time = 0  # sec
-var enemy_table = WeightedTable.new()
+var enemy_table = WeightedTable.new()  # Use proper WeightedTable class
 
 
 func _ready():

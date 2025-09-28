@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://dq5c6b7wlxw2q"]
+
+[ext_resource type="Script" path="res://features/enemies/broccoli_splitter/MiniBroccoli.gd" id="1_k5mq8"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
+radius = 12.0
+
+[node name="MiniBroccoli" type="Area2D"]
+collision_layer = 4
+collision_mask = 8
+script = ExtResource("1_k5mq8")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.5, 1, 0.5, 1)
+scale = Vector2(24, 24)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_1")

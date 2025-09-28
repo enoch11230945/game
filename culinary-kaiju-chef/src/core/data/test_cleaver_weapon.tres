@@ -1,0 +1,14 @@
+[gd_resource type="WeaponData" load_steps=0 format=3 uid="uid://b8k2m5n7q4x1w"]
+
+[resource]
+weapon_name = "Test Cleaver"
+description = "A basic cleaver for testing"
+damage = 25
+cooldown = 1.0
+range = 150.0
+projectile_count = 1
+projectile_speed = 300.0
+piercing = 0
+lifetime = 3.0
+weapon_type = "projectile"
+auto_aim = true

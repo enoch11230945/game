@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5k8x2n6m9q4r"]
+
+[ext_resource type="Script" path="res://EPIC2_TEST.gd" id="1_epic2_test"]
+
+[node name="EPIC2_TEST" type="Node2D"]
+script = ExtResource("1_epic2_test")

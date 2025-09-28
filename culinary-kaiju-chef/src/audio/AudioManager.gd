@@ -2,9 +2,9 @@
 extends Node
 
 # === AUDIO PLAYERS ===
-@onready var music_player: AudioStreamPlayer = $MusicPlayer
-@onready var sfx_player: AudioStreamPlayer = $SFXPlayer
-@onready var ui_player: AudioStreamPlayer = $UIPlayer
+var music_player: AudioStreamPlayer
+var sfx_player: AudioStreamPlayer
+var ui_player: AudioStreamPlayer
 
 # === AUDIO LIBRARIES ===
 var music_library: Dictionary = {}
@@ -58,25 +58,46 @@ func _setup_audio_players() -> void:
     ui_player.volume_db = linear_to_db(ui_volume)
 
 func _load_audio_libraries() -> void:
-    """Load audio resources into libraries"""
-    # Music library (would normally scan assets/audio/music/)
-    music_library["menu"] = preload("res://assets/audio/music/menu_theme.ogg")
-    music_library["game"] = preload("res://assets/audio/music/battle_theme.ogg")
-    music_library["boss"] = preload("res://assets/audio/music/boss_theme.ogg")
+    """Load audio resources into libraries - with fallback for missing assets"""
+    # Music library - load if exists, otherwise create placeholders
+    _try_load_music("menu", "res://assets/audio/music/menu_theme.ogg")
+    _try_load_music("game", "res://assets/audio/music/battle_theme.ogg") 
+    _try_load_music("boss", "res://assets/audio/music/boss_theme.ogg")
     
-    # SFX library (would normally scan assets/audio/sfx/)
-    sfx_library["hit"] = preload("res://assets/audio/sfx/hit.wav")
-    sfx_library["enemy_death"] = preload("res://assets/audio/sfx/enemy_death.wav")
-    sfx_library["weapon_fire"] = preload("res://assets/audio/sfx/weapon_fire.wav")
-    sfx_library["pickup_xp"] = preload("res://assets/audio/sfx/pickup_xp.wav")
-    sfx_library["level_up"] = preload("res://assets/audio/sfx/level_up.wav")
-    sfx_library["upgrade_select"] = preload("res://assets/audio/sfx/upgrade_select.wav")
+    # SFX library - load if exists, otherwise create placeholders
+    _try_load_sfx("hit", "res://assets/audio/sfx/hit.wav")
+    _try_load_sfx("enemy_death", "res://assets/audio/sfx/enemy_death.wav")
+    _try_load_sfx("weapon_fire", "res://assets/audio/sfx/weapon_fire.wav")
+    _try_load_sfx("pickup_xp", "res://assets/audio/sfx/pickup_xp.wav")
+    _try_load_sfx("level_up", "res://assets/audio/sfx/level_up.wav")
+    _try_load_sfx("upgrade_select", "res://assets/audio/sfx/upgrade_select.wav")
     
-    # UI sounds
-    ui_sounds["button_hover"] = preload("res://assets/audio/ui/button_hover.wav")
-    ui_sounds["button_click"] = preload("res://assets/audio/ui/button_click.wav")
-    ui_sounds["menu_open"] = preload("res://assets/audio/ui/menu_open.wav")
-    ui_sounds["menu_close"] = preload("res://assets/audio/ui/menu_close.wav")
+    # UI sounds - load if exists, otherwise create placeholders
+    _try_load_ui("button_hover", "res://assets/audio/ui/button_hover.wav")
+    _try_load_ui("button_click", "res://assets/audio/ui/button_click.wav")
+    _try_load_ui("menu_open", "res://assets/audio/ui/menu_open.wav")
+    _try_load_ui("menu_close", "res://assets/audio/ui/menu_close.wav")
+
+func _try_load_music(key: String, path: String) -> void:
+    if ResourceLoader.exists(path):
+        music_library[key] = load(path)
+    else:
+        print("🔇 Audio file missing: %s" % path)
+        music_library[key] = null
+
+func _try_load_sfx(key: String, path: String) -> void:
+    if ResourceLoader.exists(path):
+        sfx_library[key] = load(path)
+    else:
+        print("🔇 Audio file missing: %s" % path)
+        sfx_library[key] = null
+
+func _try_load_ui(key: String, path: String) -> void:
+    if ResourceLoader.exists(path):
+        ui_sounds[key] = load(path)
+    else:
+        print("🔇 Audio file missing: %s" % path)
+        ui_sounds[key] = null
     
     print("✅ Audio libraries loaded: %d music, %d sfx, %d ui" % [
         music_library.size(), sfx_library.size(), ui_sounds.size()

@@ -139,11 +139,11 @@ func show_interstitial_ad() -> bool:
 
 func purchase_premium_upgrade() -> bool:
     """Purchase premium upgrade"""
-    return mobile_monetization.purchase_item("premium_upgrade", 4.99)
+    return await mobile_monetization.purchase_item("premium_upgrade", 4.99)
 
 func purchase_cosmetic_item(item_id: String, price: float) -> bool:
     """Purchase cosmetic item"""
-    return mobile_monetization.purchase_item(item_id, price)
+    return await mobile_monetization.purchase_item(item_id, price)
 
 # === ANALYTICS & TRACKING ===
 

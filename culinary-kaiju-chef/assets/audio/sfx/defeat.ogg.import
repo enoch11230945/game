@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://bgkena6bp47aa"
-path="res://.godot/imported/defeat.ogg-08aac9ee9332d58def44f1ce4454565a.oggvorbisstr"
+path="res://.godot/imported/defeat.ogg-8d7bf213297b65dd6156960f3dda87d9.oggvorbisstr"
 
 [deps]
 
-source_file="res://assets/audio/defeat.ogg"
-dest_files=["res://.godot/imported/defeat.ogg-08aac9ee9332d58def44f1ce4454565a.oggvorbisstr"]
+source_file="res://assets/audio/sfx/defeat.ogg"
+dest_files=["res://.godot/imported/defeat.ogg-8d7bf213297b65dd6156960f3dda87d9.oggvorbisstr"]
 
 [params]
 

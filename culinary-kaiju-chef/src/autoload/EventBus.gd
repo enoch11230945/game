@@ -79,6 +79,7 @@ func emit_ability_upgrade_added(upgrade: Resource, current_upgrades: Dictionary)
 
 func emit_player_damaged():
     player_damaged.emit()
+    
 signal hide_upgrade_screen()
 signal update_hud(health: int, level: int, xp: int, xp_required: int)
 signal show_damage_number(position: Vector2, damage: int, color: Color)
@@ -87,11 +88,6 @@ signal show_damage_number(position: Vector2, damage: int, color: Color)
 signal item_collected(item_type: String, position: Vector2)
 signal xp_gem_spawned(position: Vector2, value: int)
 
-# === AUDIO EVENTS ===
-signal play_sound(sound_name: String)
-signal play_music(music_name: String)
-signal stop_music()
-
 # === BOSS EVENTS ===
 signal boss_spawn_requested(boss_data: BossData)
 signal boss_spawned(boss: Node2D)
@@ -99,22 +95,18 @@ signal boss_phase_changed(boss: Node2D, new_phase: int)
 signal boss_defeated(boss: Node2D, boss_data: BossData)
 
 # === UPGRADE EVENTS ===
-signal upgrade_applied(upgrade: UpgradeData)
+# NOTE: upgrade_applied already defined above at line 33
 signal passive_effect_applied(effect_name: String)
 signal weapon_evolved(old_weapon: String, new_weapon: String)
 
 # === META PROGRESSION EVENTS ===
 signal gold_collected(amount: int)
 signal meta_upgrade_purchased(upgrade_name: String, level: int)
-signal achievement_unlocked(achievement_id: String)
+# NOTE: achievement_unlocked already defined above at line 69
 signal character_unlocked(character_id: String)
 
 # === MONETIZATION EVENTS ===
-signal ad_requested(ad_type: String)
-signal ad_watched_successfully(ad_type: String, reward: Dictionary)
-signal ad_failed(ad_type: String, reason: String)
-signal iap_requested(product_id: String)
-signal iap_completed(product_id: String, success: bool)
+# NOTE: All monetization signals already defined above at lines 61-66
 
 # === SCREEN TRANSITION EVENTS ===
 signal scene_change_requested(scene_path: String)
@@ -122,8 +114,8 @@ signal main_menu_requested()
 signal game_restart_requested()
 
 # === PARTICLE/EFFECT EVENTS ===
-signal spawn_particle_effect(effect_name: String, position: Vector2)
-signal screen_shake_requested(intensity: float, duration: float)
+# NOTE: spawn_particle_effect already defined above at line 53
+# NOTE: screen_shake_requested already defined above at line 52
 signal screen_flash_requested(color: Color, duration: float)
 
 # Debugging function
@@ -147,7 +139,7 @@ func emit_player_level_up_effects(new_level: int):
     spawn_particle_effect.emit("level_up", Vector2.ZERO)
     play_sound.emit("level_up")
     screen_flash_requested.emit(Color.YELLOW, 0.3)
-    update_hud.emit(health, level, xp, xp_required)
+    # Note: update_hud should be called separately with actual values
 
 func emit_enemy_death(enemy: Node2D, enemy_data: EnemyData, position: Vector2):
     var xp_reward = enemy_data.experience_reward

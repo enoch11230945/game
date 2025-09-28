@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://bqpyuecryc6mt"]
+
+[ext_resource type="Script" path="res://MINIMAL_TEST.gd" id="1_0wf8d"]
+
+[node name="MINIMAL_TEST" type="Node2D"]
+script = ExtResource("1_0wf8d")
+
+[node name="Label" type="Label" parent="."]
+offset_right = 400.0
+offset_bottom = 100.0
+text = "MINIMAL TEST - GAME SYSTEMS LOADING
+Press SPACE to test basic functionality"
+horizontal_alignment = 1
+vertical_alignment = 1

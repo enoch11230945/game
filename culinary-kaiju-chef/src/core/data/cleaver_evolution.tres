@@ -1,0 +1,23 @@
+[gd_resource type="WeaponEvolutionData" format=3 uid="uid://dk8x5m2q9r4w1"]
+
+[sub_resource type="WeaponData" id="evolved_cleaver"]
+weapon_name = "Meat Cleaver Rampage"
+description = "An evolved cleaver that spins and seeks enemies"
+damage = 80
+cooldown = 0.6
+speed = 350.0
+range = 300.0
+projectile_count = 3
+piercing = 2
+lifetime = 4.0
+spread_angle = 120.0
+weapon_type = "homing_projectile"
+auto_aim = true
+
+[resource]
+base_weapon_name = "Cleaver"
+required_level = 8
+required_passive = "Berserker Charm"
+evolved_weapon_data = SubResource("evolved_cleaver")
+evolution_name = "Meat Cleaver Rampage"
+evolution_description = "The cleaver has evolved into a spinning death machine!"

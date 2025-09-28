@@ -51,17 +51,24 @@ class_name EnemyData
 @export var death_effect: String = ""  # "explode", "split", "spawn", etc.
 @export var death_value: int = 0       # Explosion radius, split count, etc.
 
-# Compatibility functions for various property access patterns
-func get(property: String, default_value = null):
-    match property:
-        "wobble_amplitude": return wobble_amplitude
-        "wobble_frequency": return wobble_frequency
-        "charge_interval": return charge_interval
-        "charge_duration": return charge_duration
-        "charge_multiplier": return charge_multiplier
-        "separation_radius": return separation_radius
-        "separation_strength": return separation_strength
-        _: return default_value
+# Compatibility properties for direct access (Linus: eliminate special cases)
+func get_wobble_amplitude() -> float:
+    return wobble_amplitude
 
-func has_method(method_name: String) -> bool:
-    return method_name == "get"
+func get_wobble_frequency() -> float:
+    return wobble_frequency
+
+func get_charge_interval() -> float:
+    return charge_interval
+
+func get_charge_duration() -> float:
+    return charge_duration
+
+func get_charge_multiplier() -> float:
+    return charge_multiplier
+
+func get_separation_radius() -> float:
+    return separation_radius
+
+func get_separation_strength() -> float:
+    return separation_strength

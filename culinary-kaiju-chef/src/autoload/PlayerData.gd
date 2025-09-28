@@ -4,9 +4,10 @@ extends Node
 
 const SAVE_FILE = "user://culinary_kaiju_save.tres"
 
-# === META PROGRESSION DATA ===
-var total_gold: int = 0
+# === META PROGRESSION DATA (Epic 2.1 - 永久货币) ===
+var total_gold: int = 0  # 永久货币
 var spent_gold: int = 0
+var games_played: int = 0
 
 # === PERMANENT UPGRADES ===
 var meta_upgrades: Dictionary = {
@@ -29,7 +30,6 @@ var meta_upgrades: Dictionary = {
 }
 
 # === STATISTICS ===
-var games_played: int = 0
 var total_time_played: float = 0.0
 var best_survival_time: float = 0.0
 var total_kills: int = 0

@@ -92,27 +92,6 @@ func reset() -> void:
 
 # Signal for damage tracking
 signal enemy_hit(enemy: Node, damage: int)
-    if area.has_method("take_damage"):
-        area.take_damage(damage)
-        # 回填武器傷害統計（若需要 HUD 顯示 DPS）
-        if get_parent() and get_parent().get_parent():
-            var maybe_weapon = get_parent().get_parent()
-            if maybe_weapon is BaseWeapon:
-                maybe_weapon.total_damage_dealt += damage
-        enemies_hit += 1
-        
-        # Check if we should pierce or be destroyed
-        if enemies_hit > piercing:
-            call_deferred("_reclaim_self")
-        else:
-            # 穿透時短暫高亮
-            if sprite:
-                sprite.modulate = Color(1,0.9,0.3,1)
-                var tween = create_tween()
-                tween.tween_property(sprite, "modulate", Color.WHITE, 0.08)
-
-func _on_lifetime_timeout() -> void:
-    call_deferred("_reclaim_self")
 
 func _reclaim_self() -> void:
     # 停用邏輯再回收，避免殘留移動或碰撞信號

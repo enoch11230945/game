@@ -26,7 +26,8 @@ func on_timer_timeout():
 	axe_instance.hitbox_component.damage = base_damage * additional_damage_percent
 
 
-func on_ability_upgrade_added(upgrade: AbilityUpgrade, current_upgrades: Dictionary):
-	match upgrade.id:
+func on_ability_upgrade_added(upgrade: Resource, current_upgrades: Dictionary):
+	var upgrade_id = upgrade.get("id", "")
+	match upgrade_id:
 		"axe_damage":
-			additional_damage_percent = 1 + (current_upgrades["axe_damage"]["quantity"] * 0.1)
+			additional_damage_percent = 1 + (current_upgrades.get("axe_damage", {}).get("quantity", 0) * 0.1)

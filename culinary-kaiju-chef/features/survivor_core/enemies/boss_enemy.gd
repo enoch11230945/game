@@ -18,10 +18,10 @@ func on_died():
 	# Boss drops lots of XP
 	for i in range(10):
 		var offset = Vector2(randf_range(-30, 30), randf_range(-30, 30))
-		GameEvents.emit_experience_vial_dropped(global_position + offset)
+		EventBus.experience_gained.emit(20, global_position + offset)
 	
 	# Signal boss defeat
-	EventBus.emit("boss_defeated")
+	EventBus.boss_defeated.emit()
 	queue_free()
 
 func _on_area_entered(other_area: Area2D):
@@ -39,9 +39,8 @@ func spawn_circular_attack():
 		var angle = i * angle_step
 		var direction = Vector2(cos(angle), sin(angle))
 		
-		# Create a simple projectile (you might want to create a proper projectile scene)
-		var projectile = preload("res://src/weapons/base_weapon/BaseProjectile.tscn").instantiate()
+		# Create a simple projectile using the correct path
+		var projectile = preload("res://features/weapons/base_weapon/BaseProjectile.tscn").instantiate()
 		get_tree().current_scene.add_child(projectile)
 		projectile.global_position = global_position
-		projectile.direction = direction
-		projectile.speed = 150.0
+		# Note: Direction and speed would be handled by the projectile script

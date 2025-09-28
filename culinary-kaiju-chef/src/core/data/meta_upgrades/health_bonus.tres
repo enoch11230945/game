@@ -1,0 +1,11 @@
+[gd_resource type="MetaUpgradeData" format=3 uid="uid://bm3k8x5q9r2w7"]
+
+[resource]
+id = "health_bonus"
+name = "厨师体质"
+description = "永久提升初始生命值"
+max_level = 10
+cost_per_level = [50, 75, 100, 150, 200, 300, 400, 600, 800, 1200]
+stat_to_modify = "max_health_modifier"
+value_per_level = [10.0, 15.0, 20.0, 25.0, 30.0, 40.0, 50.0, 60.0, 80.0, 100.0]
+upgrade_category = "SURVIVAL"

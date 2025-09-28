@@ -25,14 +25,14 @@ func _on_player_health_changed(current: int, max_health: int) -> void:
 func _ready() -> void:
     # Initialize from character data
     if character_data:
-        max_health = character_data.get("max_health", 100)
+        max_health = character_data.max_health if character_data.max_health else 100
         current_health = max_health
-        movement_speed = character_data.get("movement_speed", 300.0)
+        movement_speed = character_data.movement_speed if character_data.movement_speed else 300.0
         
-        if sprite and character_data.has("sprite_texture"):
+        if sprite and character_data.sprite_texture:
             sprite.texture = character_data.sprite_texture
-            sprite.scale = character_data.get("sprite_scale", Vector2.ONE)
-            sprite.modulate = character_data.get("sprite_modulate", Color.WHITE)
+            sprite.scale = character_data.sprite_scale if character_data.sprite_scale else Vector2.ONE
+            sprite.modulate = character_data.sprite_modulate if character_data.sprite_modulate else Color.WHITE
     
     # Add to player group for targeting
     add_to_group("player")
@@ -62,8 +62,8 @@ func _physics_process(delta: float) -> void:
     
     # Apply character data multipliers if available
     var actual_speed = movement_speed
-    if character_data:
-        actual_speed *= character_data.get("speed_multiplier", 1.0)
+    if character_data and character_data.passive_bonuses.has("speed_multiplier"):
+        actual_speed *= character_data.passive_bonuses["speed_multiplier"]
     
     velocity = input_direction * actual_speed
     move_and_slide()

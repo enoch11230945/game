@@ -145,20 +145,6 @@ func modify_movement_speed(multiplier: float) -> void:
     movement_speed *= multiplier
     EventBus.player_move_speed_changed.emit(movement_speed)
 
-func take_damage(amount: int) -> void:
-    current_health -= amount
-    EventBus.player_health_changed.emit(current_health, max_health)
-    
-    # Trigger hit effect
-    if sprite:
-        sprite.modulate = Color.RED
-        var tween = create_tween()
-        tween.tween_property(sprite, "modulate", character_data.sprite_modulate if character_data else Color.WHITE, 0.2)
-    
-    # Check for death
-    if current_health <= 0:
-        die()
-
 func heal(amount: int) -> void:
     current_health = min(current_health + amount, max_health)
     EventBus.player_health_changed.emit(current_health, max_health)

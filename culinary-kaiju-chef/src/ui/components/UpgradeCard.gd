@@ -22,16 +22,17 @@ func setup(data: Resource, index: int) -> void:
     
     if upgrade_data:
         # Set name and description
-        name_label.text = upgrade_data.get("item_name", "Unknown")
-        description_label.text = upgrade_data.get("description", "No description")
+        name_label.text = upgrade_data.upgrade_name if upgrade_data.upgrade_name else "Unknown"
+        description_label.text = upgrade_data.description if upgrade_data.description else "No description"
         
         # Set icon if available
-        var icon = upgrade_data.get("item_icon")
-        if icon and icon_rect:
-            icon_rect.texture = icon
+        if upgrade_data.icon_texture_path and not upgrade_data.icon_texture_path.is_empty() and icon_rect:
+            var icon = load(upgrade_data.icon_texture_path)
+            if icon:
+                icon_rect.texture = icon
         
         # Color based on rarity
-        var rarity = upgrade_data.get("rarity", "common")
+        var rarity = upgrade_data.rarity if upgrade_data.rarity else "COMMON"
         _set_card_color(rarity)
 
 func _set_card_color(rarity: String) -> void:

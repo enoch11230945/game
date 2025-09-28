@@ -1,0 +1,11 @@
+[gd_resource type="MetaUpgradeData" format=3 uid="uid://ck4n9y6r1s3x8"]
+
+[resource]
+id = "damage_bonus"
+name = "刀工精进"
+description = "永久提升武器伤害"
+max_level = 10
+cost_per_level = [60, 90, 120, 180, 240, 360, 480, 720, 960, 1440]
+stat_to_modify = "damage_modifier"
+value_per_level = [0.05, 0.05, 0.08, 0.08, 0.1, 0.1, 0.12, 0.12, 0.15, 0.2]
+upgrade_category = "COMBAT"
