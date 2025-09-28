@@ -1,4 +1,4 @@
-you must use godot mcp keep going make the game,do not fucking rebuild or simplify , if you see any error just fix it one by one,, follow "C:\Users\fello\Desktop\game\prd5.txt","C:\Users\fello\Desktop\game\prd4.txt",
+you must use godot mcp keep going make the game,do not fucking rebuild or simplify , if you see any error just fix it one by one,you can copy any file you want from C:\Users\fello\Desktop\game\culinary-kaiju-chef\_source_templates to my game , follow "C:\Users\fello\Desktop\game\prd5.txt","C:\Users\fello\Desktop\game\prd4.txt",
 "C:\Users\fello\Desktop\game\prd2.txt",
 "C:\Users\fello\Desktop\game\prd3.txt", "\Desktop\game\Godot 4.5 游戏系統架構與檔案藍圖.txt"
 "\Desktop\game\Godot 4.5 游戏todo.txt"

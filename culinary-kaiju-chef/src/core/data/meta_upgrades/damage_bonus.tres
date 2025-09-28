@@ -1,0 +1,10 @@
+[gd_resource type="MetaUpgradeData" format=3]
+
+[resource]
+id = "damage_bonus"
+display_name = "力量增幅"
+description = "所有武器傷害 +{value}%"
+max_level = 5
+costs = [120, 300, 600, 1200, 2400]
+values = [15.0, 30.0, 45.0, 60.0, 75.0]
+upgrade_type = 0

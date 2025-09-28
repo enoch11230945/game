@@ -25,6 +25,7 @@ DataManager="*res://src/autoload/DataManager.gd"
 UpgradeManager="*res://src/autoload/UpgradeManager.gd"
 AudioManager="*res://src/autoload/AudioManager.gd"
 EffectsManager="*res://src/autoload/EffectsManager.gd"
+AdManager="*res://src/autoload/AdManager.gd"
 
 [input]
 

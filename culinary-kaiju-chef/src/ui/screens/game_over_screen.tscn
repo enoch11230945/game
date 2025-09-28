@@ -1,0 +1,117 @@
+[gd_scene load_steps=3 format=3 uid="uid://bm5l74ep1l4nj"]
+
+[ext_resource type="Script" path="res://src/ui/screens/game_over_screen.gd" id="1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
+bg_color = Color(0, 0, 0, 0.8)
+
+[node name="GameOverScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_1")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(400, 0)
+
+[node name="GameOverLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "遊戲結束"
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+
+[node name="ScoreContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ScoreLabel" type="Label" parent="CenterContainer/VBoxContainer/ScoreContainer"]
+layout_mode = 2
+text = "分數: 0"
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+
+[node name="TimeLabel" type="Label" parent="CenterContainer/VBoxContainer/ScoreContainer"]
+layout_mode = 2
+text = "存活時間: 0:00"
+horizontal_alignment = 1
+
+[node name="KillsLabel" type="Label" parent="CenterContainer/VBoxContainer/ScoreContainer"]
+layout_mode = 2
+text = "擊殺: 0"
+horizontal_alignment = 1
+
+[node name="GoldEarnedLabel" type="Label" parent="CenterContainer/VBoxContainer/ScoreContainer"]
+layout_mode = 2
+text = "獲得金幣: 0"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ButtonsContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ReviveContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer/ButtonsContainer"]
+layout_mode = 2
+visible = false
+
+[node name="ReviveLabel" type="Label" parent="CenterContainer/VBoxContainer/ButtonsContainer/ReviveContainer"]
+layout_mode = 2
+text = "看廣告復活？"
+horizontal_alignment = 1
+
+[node name="ReviveButton" type="Button" parent="CenterContainer/VBoxContainer/ButtonsContainer/ReviveContainer"]
+layout_mode = 2
+text = "觀看廣告復活"
+
+[node name="ReviveTimer" type="Label" parent="CenterContainer/VBoxContainer/ButtonsContainer/ReviveContainer"]
+layout_mode = 2
+text = "復活機會剩餘: 10 秒"
+horizontal_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="CenterContainer/VBoxContainer/ButtonsContainer"]
+layout_mode = 2
+
+[node name="RewardContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer/ButtonsContainer"]
+layout_mode = 2
+
+[node name="DoubleGoldLabel" type="Label" parent="CenterContainer/VBoxContainer/ButtonsContainer/RewardContainer"]
+layout_mode = 2
+text = "獲得雙倍金幣？"
+horizontal_alignment = 1
+
+[node name="DoubleGoldButton" type="Button" parent="CenterContainer/VBoxContainer/ButtonsContainer/RewardContainer"]
+layout_mode = 2
+text = "看廣告獲得雙倍金幣"
+
+[node name="HSeparator3" type="HSeparator" parent="CenterContainer/VBoxContainer/ButtonsContainer"]
+layout_mode = 2
+
+[node name="FinalButtonsContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer/ButtonsContainer"]
+layout_mode = 2
+
+[node name="RestartButton" type="Button" parent="CenterContainer/VBoxContainer/ButtonsContainer/FinalButtonsContainer"]
+layout_mode = 2
+text = "重新開始"
+
+[node name="UpgradesButton" type="Button" parent="CenterContainer/VBoxContainer/ButtonsContainer/FinalButtonsContainer"]
+layout_mode = 2
+text = "永久升級"
+
+[node name="MainMenuButton" type="Button" parent="CenterContainer/VBoxContainer/ButtonsContainer/FinalButtonsContainer"]
+layout_mode = 2
+text = "主選單"

@@ -1,0 +1,10 @@
+[gd_resource type="MetaUpgradeData" format=3]
+
+[resource]
+id = "health_bonus"
+display_name = "強身健體"
+description = "最大生命值 +{value}%"
+max_level = 5
+costs = [100, 250, 500, 1000, 2000]
+values = [10.0, 20.0, 30.0, 40.0, 50.0]
+upgrade_type = 0

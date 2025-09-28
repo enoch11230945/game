@@ -29,9 +29,31 @@ var sub_menu
 @onready var flow_control_container = %FlowControlContainer
 @onready var back_button = %BackButton
 
+# Epic 2 & 3: 新增按鈕
+@onready var character_select_button = %CharacterSelectButton
+@onready var meta_upgrades_button = %MetaUpgradesButton
+@onready var gold_label = %GoldLabel
+
+func _ready() -> void:
+	# 連接新按鈕的信號
+	if character_select_button:
+		character_select_button.pressed.connect(_on_character_select_pressed)
+	if meta_upgrades_button:
+		meta_upgrades_button.pressed.connect(_on_meta_upgrades_pressed)
+	
+	# 連接玩家數據信號
+	PlayerData.gold_changed.connect(_on_gold_changed)
+	
+	# 更新金幣顯示
+	_update_gold_display()
+
 func load_game_scene() -> void:
-	# 強制使用 SceneLoader 讀取 survivor_core 主玩法場景，忽略外部輸入的 game_scene_path 特殊情況。
-	var target_scene_path := "res://features/survivor_core/main.tscn"
+	# 確保玩家已選擇角色
+	if PlayerData.selected_character.is_empty():
+		PlayerData.select_character("default_chef")
+	
+	# 使用正確的主場景路徑
+	var target_scene_path := "res://src/main/main.tscn"
 	if signal_game_start:
 		SceneLoader.load_scene(target_scene_path, true)
 		game_started.emit()
@@ -40,6 +62,24 @@ func load_game_scene() -> void:
 
 func new_game() -> void:
 	load_game_scene()
+
+# Epic 2 & 3: 新增功能函數
+func _on_character_select_pressed() -> void:
+	"""角色選擇按鈕"""
+	get_tree().change_scene_to_file("res://src/ui/screens/character_select_screen.tscn")
+
+func _on_meta_upgrades_pressed() -> void:
+	"""永久升級按鈕"""
+	get_tree().change_scene_to_file("res://src/ui/screens/meta_upgrade_screen.tscn")
+
+func _on_gold_changed(new_amount: int) -> void:
+	"""金幣變化回調"""
+	_update_gold_display()
+
+func _update_gold_display() -> void:
+	"""更新金幣顯示"""
+	if gold_label:
+		gold_label.text = "金幣: " + str(PlayerData.gold)
 
 func exit_game() -> void:
 	if OS.has_feature("web"):
